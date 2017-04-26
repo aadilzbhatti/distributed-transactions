@@ -1,4 +1,4 @@
-package main 
+package participant 
 
 type Transaction struct {
   tid int
