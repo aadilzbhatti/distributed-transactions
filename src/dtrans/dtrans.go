@@ -57,8 +57,13 @@ func runCommand(cmds []string, i int) {
     fmt.Printf("Beginning transaction %v\n", tid)
 
   } else if cmds[i] == "SET" {
-    // set cmds[i + 1].cmds[i + 2] = cmds[i + 3]
+    err := Set(cmds[i + 1], cmds[i + 2], cmds[i + 3], currentId)
+    if err != nil {
+      fmt.Println("Could not set: ", err)
+      os.Exit(1)
+    }
     fmt.Printf("SETTING %v.%v = %v\n", cmds[i + 1], cmds[i + 2], cmds[i + 3])
+
   } else if cmds[i] == "GET" {
     // get cmds[i + 1].cmds[i + 2]
     fmt.Printf("GETTING %v.%v\n", cmds[i + 1], cmds[i + 2])

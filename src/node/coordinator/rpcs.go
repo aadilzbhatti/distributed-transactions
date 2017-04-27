@@ -3,28 +3,32 @@ package coordinator
 import (
   "fmt"
   "time"
+  "net/rpc"
+  "log"
   "node/participant"
 )
 
 type BeginArgs struct {}
 
-type CoordSetArgs struct {
-  serverId string
-  key string
-  value string
+type SetArgs struct {
+  Tid int32
+  ServerId string
+  Key string
+  Value string
 }
 
 type CoordGetArgs struct {
-  serverId string
-  key string
+  Tid int32
+  ServerId string
+  Key string
 }
 
 type AbortArgs struct {
-  tid int32
+  Tid int32
 }
 
 type CommitArgs struct {
-  tid int32
+  Tid int32
 }
 
 func (c Coordinator) Begin(ba *BeginArgs, reply *int32) error {
@@ -32,15 +36,15 @@ func (c Coordinator) Begin(ba *BeginArgs, reply *int32) error {
   return nil
 }
 
-func (c Coordinator) Set(sa *CoordSetArgs, reply *bool) error {
-  if p, ok := c.participants[sa.serverId]; ok {
+func (c Coordinator) Set(sa *SetArgs, reply *bool) error {
+  if p, ok := c.Participants[sa.ServerId]; ok {
     client, err := rpc.Dial("tcp", fmt.Sprintf("%s:%d", p.Address, 3000))
     if err != nil {
       log.Println("Error in Set/Dial: ", err)
       return err
     }
 
-    psa := participant.SetArgs{sa.key, sa.value}
+    psa := participant.SetArgs{sa.Tid, sa.Key, sa.Value}
     err = client.Call("Participant.SetKey", &psa, &reply)
     if err != nil {
       log.Println("Error in Set/RPC: ", err)
@@ -54,21 +58,21 @@ func (c Coordinator) Set(sa *CoordSetArgs, reply *bool) error {
 }
 
 func (c Coordinator) Get(ga *CoordGetArgs, reply *bool) error {
-  if p, ok := c.participants[ga.serverId]; ok {
+  if p, ok := c.Participants[ga.ServerId]; ok {
     client, err := rpc.Dial("tcp", fmt.Sprintf("%s:%d", p.Address, 3000))
     if err != nil {
       log.Println("Error in Get/Dial: ", err)
       return err
     }
 
-    pga := participant.GetArgs{ga.key}
+    pga := participant.GetArgs{ga.Tid, ga.Key}
     err = client.Call("Participant.GetKey", &pga, &reply)
     if err != nil {
       log.Println("Error in Get/RPC: ", err)
       return err
     }
     return nil
-    
+
   } else {
     return fmt.Errorf("No such server in system")
   }

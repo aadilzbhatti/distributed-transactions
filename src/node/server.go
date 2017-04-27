@@ -2,6 +2,7 @@ package node
 
 import (
   "fmt"
+  "log"
   "os/exec"
   "strings"
   "node/coordinator"
@@ -12,6 +13,7 @@ var host string = "sp17-cs425-g26-0%d.cs.illinois.edu"
 var nodeId int
 
 func Start() {
+  log.Println("Starting server..")
   hostname := getHostName()
   for i := 1; i < 10; i++ {
     name := fmt.Sprintf(host, i)

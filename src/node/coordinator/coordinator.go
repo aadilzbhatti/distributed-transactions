@@ -2,6 +2,7 @@ package coordinator
 
 import (
   "net/rpc"
+  "net"
   "log"
   "fmt"
   "sync"
@@ -10,9 +11,10 @@ import (
 
 var host string = "sp17-cs425-g26-0%d.cs.illinois.edu"
 var mutex = &sync.Mutex{}
+var self Coordinator
 
 type Coordinator struct {
-  participants map[string]Participant
+  Participants map[string]participant.Participant
 }
 
 func Start() error {
@@ -30,10 +32,11 @@ func Start() error {
   }
 
   // interface with client
+  return nil
 }
 
 func New() Coordinator {
-  parts := make(map[string]Participant, 0)
+  parts := make(map[string]participant.Participant, 0)
   c := Coordinator{parts}
   return c
 }
@@ -58,7 +61,7 @@ func (c Coordinator) joinParticipant(id int) {
 
     } else {
       defer client.Close()
-      var reply Participant
+      var reply participant.Participant
       err = client.Call("Participant.Join", nil, &reply)
 
       if err != nil {
@@ -68,7 +71,7 @@ func (c Coordinator) joinParticipant(id int) {
         serverId := string(rune('A' + (id - 2)))
 
         mutex.Lock()
-        c.participants[serverId] = reply
+        c.Participants[serverId] = reply
         mutex.Unlock()
         log.Printf("Server %v joined the system\n", serverId)
       }
