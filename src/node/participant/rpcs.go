@@ -9,15 +9,15 @@ import (
 var mutex = &sync.Mutex{}
 
 type CanCommitArgs struct {
-  tid int32
+  Tid int32
 }
 
 type DoCommitArgs struct {
-  tid int32
+  Tid int32
 }
 
 type DoAbortArgs struct {
-  tid int32
+  Tid int32
 }
 
 type JoinArgs struct {}
@@ -40,15 +40,15 @@ func (p *Participant) Join(ja *JoinArgs, reply *Participant) error {
 }
 
 func (p *Participant) CanCommit(cca *CanCommitArgs, reply *bool) error {
-  if value, ok := p.Transactions[cca.tid]; ok {
-    *reply = !value.failed
+  if value, ok := p.Transactions[cca.Tid]; ok {
+    *reply = !value.Failed
     return nil
   }
   return fmt.Errorf("No such transaction in server")
 }
 
 func (p *Participant) DoCommit(dca *DoCommitArgs, reply *bool) error {
-  if value, ok := p.Transactions[dca.tid]; ok {
+  if value, ok := p.Transactions[dca.Tid]; ok {
     value.Commit()
     *reply = true
     return nil
@@ -57,7 +57,7 @@ func (p *Participant) DoCommit(dca *DoCommitArgs, reply *bool) error {
 }
 
 func (p *Participant) DoAbort(daa *DoAbortArgs, reply *bool) error {
-  if value, ok := p.Transactions[daa.tid]; ok {
+  if value, ok := p.Transactions[daa.Tid]; ok {
     value.Abort()
     *reply = true
     return nil
