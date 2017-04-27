@@ -23,12 +23,13 @@ func Start(hostname string, id int) error {
 }
 
 func (p Participant) setupRPC()  {
-  log.Println("Setting up participant RPCs")
-  rpc.Register(&self)
+  part := new(Participant)
+  rpc.Register(part)
   l, e := net.Listen("tcp", ":3000")
   if e != nil {
     log.Println("Error in setup RPC:", e)
   }
+  log.Println("Setting up participant RPCs")
   go rpc.Accept(l)
 }
 

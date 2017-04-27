@@ -43,7 +43,8 @@ func New() Coordinator {
 }
 
 func (c Coordinator) setupRPC() error {
-  rpc.Register(&self)
+  coord := new(Coordinator)
+  rpc.Register(coord)
   l, e := net.Listen("tcp", ":3000")
   if e != nil {
     log.Println("Error in setup RPC:", e)
