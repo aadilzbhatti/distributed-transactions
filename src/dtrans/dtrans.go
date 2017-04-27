@@ -66,8 +66,9 @@ func runCommand(cmds []string, i int) {
     fmt.Printf("SETTING %v.%v = %v\n", cmds[i + 1], cmds[i + 2], cmds[i + 3])
 
   } else if cmds[i] == "GET" {
-    // get cmds[i + 1].cmds[i + 2]
-    fmt.Printf("GETTING %v.%v\n", cmds[i + 1], cmds[i + 2])
+    res := Get(cmds[i + 1], cmds[i + 2], currentId)
+    fmt.Printf("%v.%v = %v\n", cmds[i + 1], cmds[i + 2], res)
+
   } else if cmds[i] == "COMMIT" {
     // commit_transaction
     fmt.Println("COMMITTING")
