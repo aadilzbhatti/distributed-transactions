@@ -65,7 +65,8 @@ func (c Coordinator) joinParticipant(id int) {
 
     } else {
       var reply participant.Participant
-      err = client.Call("Participant.Join", nil, &reply)
+      ja := participant.JoinArgs{}
+      err = client.Call("Participant.Join", &ja, &reply)
       log.Println("Did da join")
 
       if err != nil {
