@@ -66,6 +66,7 @@ func (p *Participant) DoAbort(daa *DoAbortArgs, reply *bool) error {
 }
 
 func (p *Participant) SetKey(sa *SetArgs, reply *bool) error {
+  log.Printf("In set!: %v\n", sa)
   if trans, ok := self.Transactions[sa.Tid]; ok {
     // we are executing a running transaction
     log.Println(trans)
