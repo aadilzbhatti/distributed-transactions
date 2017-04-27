@@ -60,7 +60,6 @@ func (c Coordinator) joinParticipant(id int) {
   for {
     client, err := rpc.Dial("tcp", hostname)
     if err != nil {
-      log.Println(err)
       continue
 
     } else {

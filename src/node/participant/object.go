@@ -5,9 +5,9 @@ import (
 )
 
 type Object struct {
-  key string
-  value string
-  lock *sync.RWMutex
+  Key string
+  Value string
+  Lock *sync.RWMutex
 }
 
 func (o Object) setKey(value string) {
