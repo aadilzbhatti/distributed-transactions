@@ -1,8 +1,8 @@
 package participant
 
 type Transaction struct {
-  tid int32
-  failed bool
+  Tid int32
+  Failed bool
 }
 
 func (t Transaction) Commit() {
