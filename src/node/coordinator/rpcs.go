@@ -60,7 +60,7 @@ func (c Coordinator) Set(sa *SetArgs, reply *bool) error {
   }
 }
 
-func (c Coordinator) Get(ga *GetArgs, reply *bool) error {
+func (c Coordinator) Get(ga *GetArgs, reply *string) error {
   if p, ok := self.Participants[ga.ServerId]; ok {
     client, err := rpc.Dial("tcp", fmt.Sprintf("%s:%d", p.Address, 3000))
     if err != nil {
