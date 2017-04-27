@@ -84,6 +84,7 @@ func (p *Participant) SetKey(sa *SetArgs, reply *bool) error {
     mutex.Unlock()
   }
   *reply = true
+  log.Printf("Finished setting %v = %v\n", sa.Key, sa.Value)
   return nil
 }
 
