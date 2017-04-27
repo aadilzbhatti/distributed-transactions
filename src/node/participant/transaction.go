@@ -1,18 +1,18 @@
 package participant
 
 type Transaction struct {
-  Tid int32
-  failed bool
+	Tid    int32
+	failed bool
 }
 
 func (t Transaction) hasFailed() bool {
-  return t.failed
+	return t.failed
 }
 
 func (t *Transaction) commit() {
-  t.failed = false
+	t.failed = false
 }
 
 func (t *Transaction) abort() {
-  t.failed = true
+	t.failed = true
 }

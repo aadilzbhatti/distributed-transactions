@@ -1,93 +1,106 @@
 package dtrans
 
 import (
-  "bufio"
-  "fmt"
-  "os"
-  "regexp"
-  "node"
+	"bufio"
+	"fmt"
+	"node"
+	"os"
+	"regexp"
 )
 
 var currentId int32 = 0
 
 func Start() {
-  go node.Start()
+	go node.Start()
 
-  reader := bufio.NewReader(os.Stdin)
-  fmt.Println("Starting transaction interface")
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Println("Starting transaction interface")
 
-  const usage = `Operations:
+	const usage = `Operations:
   BEGIN
   SET <server>.<key> <value>
   GET <server>.<key>
   COMMIT
   ABORT`
 
-  fmt.Println(usage)
-  r, _ := regexp.Compile(`(BEGIN)|(SET) (.*)\.(.+) (.*)|(GET) (.*)\.(.*)|(COMMIT)|(ABORT)`)
-  for {
-    text, err := reader.ReadString('\n')
-    if err != nil {
-      fmt.Println("Error reading from stdin:", err)
-      os.Exit(1)
-    }
-    if r.MatchString(text) {
-      res := r.FindStringSubmatch(text)
-      for i := range res {
-        if i > 0 && res[i] != "" {
-          runCommand(res, i)
-          break
-        }
-      }
-    } else {
-      fmt.Println("Error: Could not interpret input")
-      fmt.Println(usage)
-    }
-  }
+	fmt.Println(usage)
+	r, _ := regexp.Compile(`(BEGIN)|(SET) (.*)\.(.+) (.*)|(GET) (.*)\.(.*)|(COMMIT)|(ABORT)`)
+	for {
+		text, err := reader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Error reading from stdin:", err)
+			os.Exit(1)
+		}
+		if r.MatchString(text) {
+			res := r.FindStringSubmatch(text)
+			for i := range res {
+				if i > 0 && res[i] != "" {
+					runCommand(res, i)
+					break
+				}
+			}
+		} else {
+			fmt.Println("Error: Could not interpret input")
+			fmt.Println(usage)
+		}
+	}
 }
 
 func runCommand(cmds []string, i int) {
-  if cmds[i] == "BEGIN" {
-    fmt.Println("Not to begin")
-    err, tid := Begin()
-    if err != nil {
-      fmt.Println("Cannot begin a transaction")
-      os.Exit(1)
-    }
-    currentId = tid
-    fmt.Printf("Beginning transaction %v\n", tid)
+	if cmds[i] == "BEGIN" {
+		err, tid := Begin()
+		if err != nil {
+			fmt.Println("Cannot begin a transaction")
+			return
+		}
+		currentId = tid
+		fmt.Printf("Beginning transaction %v\n", tid)
 
-  } else if cmds[i] == "SET" {
-    if currentId == 0 {
-      fmt.Printf("Error: Must begin transaction before calling SET")
-    }
-    err := Set(cmds[i + 1], cmds[i + 2], cmds[i + 3], currentId)
-    if err != nil {
-      fmt.Println("Could not set: ", err)
-      os.Exit(1)
-    }
-    fmt.Printf("SETTING %v.%v = %v\n", cmds[i + 1], cmds[i + 2], cmds[i + 3])
+	} else if cmds[i] == "SET" {
+		if currentId == 0 {
+			fmt.Printf("Error: Must begin transaction before calling SET")
+			return
+		}
+		err := Set(cmds[i+1], cmds[i+2], cmds[i+3], currentId)
+		if err != nil {
+			fmt.Println("Could not set: ", err)
+			return
+		}
+		fmt.Printf("SETTING %v.%v = %v\n", cmds[i+1], cmds[i+2], cmds[i+3])
 
-  } else if cmds[i] == "GET" {
-    if currentId == 0 {
-      fmt.Printf("Error: Must begin transaction before calling GET")
-    }
-    res := Get(cmds[i + 1], cmds[i + 2], currentId)
-    fmt.Printf("%v.%v = %v\n", cmds[i + 1], cmds[i + 2], res)
+	} else if cmds[i] == "GET" {
+		if currentId == 0 {
+			fmt.Printf("Error: Must begin transaction before calling GET")
+			return
+		}
+		res := Get(cmds[i+1], cmds[i+2], currentId)
+		fmt.Printf("%v.%v = %v\n", cmds[i+1], cmds[i+2], res)
 
-  } else if cmds[i] == "COMMIT" {
-    if currentId == 0 {
-      fmt.Printf("Error: Must begin transaction before calling COMMIT")
-    }
-    // commit_transaction
-    fmt.Println("COMMITTING")
-  } else if cmds[i] == "ABORT" {
-    if currentId == 0 {
-      fmt.Printf("Error: Must begin transaction before calling ABORT")
-    }
-    // abort_transaction
-    fmt.Println("ABORTING")
-  } else {
-    fmt.Println("Error: Invalid command")
-  }
+	} else if cmds[i] == "COMMIT" {
+		if currentId == 0 {
+			fmt.Printf("Error: Must begin transaction before calling COMMIT")
+			return
+		}
+		err := Commit()
+		if err != nil {
+			fmt.Println("Error in commit:", err)
+			return
+		}
+		fmt.Println("COMMITTING")
+
+	} else if cmds[i] == "ABORT" {
+		if currentId == 0 {
+			fmt.Printf("Error: Must begin transaction before calling ABORT")
+			return
+		}
+		err := Abort()
+		if err != nil {
+			fmt.Println("Error in abort:", err)
+			return
+		}
+		fmt.Println("ABORTING")
+
+	} else {
+		fmt.Println("Error: Invalid command")
+	}
 }

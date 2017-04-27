@@ -1,9 +1,9 @@
 package main
 
 import (
-  "dtrans"
+	"dtrans"
 )
 
 func main() {
-  dtrans.Start()
+	dtrans.Start()
 }
