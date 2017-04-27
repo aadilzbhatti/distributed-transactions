@@ -40,7 +40,7 @@ func (p *Participant) Join(ja *JoinArgs, reply *Participant) error {
 }
 
 func (p *Participant) CanCommit(cca *CanCommitArgs, reply *bool) error {
-  if value, ok := p.Transactions[cca.Tid]; ok {
+  if value, ok := self.Transactions[cca.Tid]; ok {
     *reply = !value.Failed
     return nil
   }
@@ -48,7 +48,7 @@ func (p *Participant) CanCommit(cca *CanCommitArgs, reply *bool) error {
 }
 
 func (p *Participant) DoCommit(dca *DoCommitArgs, reply *bool) error {
-  if value, ok := p.Transactions[dca.Tid]; ok {
+  if value, ok := self.Transactions[dca.Tid]; ok {
     value.Commit()
     *reply = true
     return nil
@@ -57,7 +57,7 @@ func (p *Participant) DoCommit(dca *DoCommitArgs, reply *bool) error {
 }
 
 func (p *Participant) DoAbort(daa *DoAbortArgs, reply *bool) error {
-  if value, ok := p.Transactions[daa.Tid]; ok {
+  if value, ok := self.Transactions[daa.Tid]; ok {
     value.Abort()
     *reply = true
     return nil
@@ -66,20 +66,20 @@ func (p *Participant) DoAbort(daa *DoAbortArgs, reply *bool) error {
 }
 
 func (p *Participant) SetKey(sa *SetArgs, reply *bool) error {
-  if trans, ok := p.Transactions[sa.Tid]; ok {
+  if trans, ok := self.Transactions[sa.Tid]; ok {
     // we are executing a running transaction
     log.Println(trans)
 
   } else {
     // we need to start a new transaction
     t := Transaction{sa.Tid, false}
-    p.Transactions[sa.Tid] = t
+    self.Transactions[sa.Tid] = t
   }
-  if _, ok := p.Objects[sa.Key]; ok {
-    p.Objects[sa.Key].setKey(sa.Value)
+  if _, ok := self.Objects[sa.Key]; ok {
+    self.Objects[sa.Key].setKey(sa.Value)
   } else {
     mutex.Lock()
-    p.Objects[sa.Key] = NewObject(sa.Key, sa.Value)
+    self.Objects[sa.Key] = NewObject(sa.Key, sa.Value)
     mutex.Unlock()
   }
   *reply = true
@@ -87,15 +87,15 @@ func (p *Participant) SetKey(sa *SetArgs, reply *bool) error {
 }
 
 func (p *Participant) GetKey(ga *GetArgs, reply *string) error {
-  if _, ok := p.Transactions[ga.Tid]; ok {
+  if _, ok := self.Transactions[ga.Tid]; ok {
     // we are executing a running Transaction
 
   } else {
     // we need to start a new transaction
     t := Transaction{ga.Tid, false}
-    p.Transactions[ga.Tid] = t
+    self.Transactions[ga.Tid] = t
   }
-  if v, ok := p.Objects[ga.Key]; ok {
+  if v, ok := self.Objects[ga.Key]; ok {
     *reply = v.getKey()
   } else {
     reply = nil
