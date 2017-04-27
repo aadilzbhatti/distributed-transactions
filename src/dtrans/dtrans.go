@@ -48,6 +48,7 @@ func Start() {
 
 func runCommand(cmds []string, i int) {
   if cmds[i] == "BEGIN" {
+    fmt.Println("Not to begin")
     err, tid := Begin()
     if err != nil {
       fmt.Println("Cannot begin a transaction")

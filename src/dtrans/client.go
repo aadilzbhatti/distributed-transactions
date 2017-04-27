@@ -11,6 +11,7 @@ var host string = "sp17-cs425-g26-0%d.cs.illinois.edu:3000"
 
 func Begin() (error, int32) {
   client, err := rpc.Dial("tcp", chost)
+  log.Println("Beginning...")
   if err != nil {
     log.Println("Error in Begin/Dial: ", err)
     return err, 0

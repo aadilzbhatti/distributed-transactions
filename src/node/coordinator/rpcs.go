@@ -32,6 +32,7 @@ type CommitArgs struct {
 }
 
 func (c Coordinator) Begin(ba *BeginArgs, reply *int32) error {
+  log.Println("In Begin!")
   *reply = int32(time.Now().Unix())
   return nil
 }
