@@ -43,8 +43,21 @@ func Set(serverId string, key string, value string, currId int32) error {
 }
 
 func Get(serverId string, key string, currId int32) string {
-  // TODO RPC to Coordinator.Get
-  return ""
+  client, err := rpc.Dial("tcp", chost)
+  if err != nil {
+    log.Println("Error in Get/Dial: ", err)
+    return ""
+  }
+
+  ga := coordinator.GetArgs{currId, serverId, key}
+  var reply string
+  err = client.Call("Coordinator.Get", &ga, &reply)
+  if err != nil {
+    log.Println("Error in Get/RPC: ", err)
+    return ""
+  }
+  
+  return reply
 }
 
 func Abort() {

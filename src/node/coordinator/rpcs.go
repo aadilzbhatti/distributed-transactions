@@ -17,7 +17,7 @@ type SetArgs struct {
   Value string
 }
 
-type CoordGetArgs struct {
+type GetArgs struct {
   Tid int32
   ServerId string
   Key string
@@ -60,7 +60,7 @@ func (c Coordinator) Set(sa *SetArgs, reply *bool) error {
   }
 }
 
-func (c Coordinator) Get(ga *CoordGetArgs, reply *bool) error {
+func (c Coordinator) Get(ga *GetArgs, reply *bool) error {
   if p, ok := self.Participants[ga.ServerId]; ok {
     client, err := rpc.Dial("tcp", fmt.Sprintf("%s:%d", p.Address, 3000))
     if err != nil {
