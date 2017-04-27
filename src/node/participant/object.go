@@ -11,16 +11,16 @@ type Object struct {
 }
 
 func (o Object) setKey(value string) {
-  o.lock.Lock()
-  o.value = value
-  o.lock.Unlock()
+  o.Lock.Lock()
+  o.Value = value
+  o.Lock.Unlock()
 }
 
 func (o Object) getKey() string {
   var res string
-  o.lock.RLock()
-  res = o.value
-  o.lock.RUnlock()
+  o.Lock.RLock()
+  res = o.Value
+  o.Lock.RUnlock()
   return res
 }
 
