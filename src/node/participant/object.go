@@ -2,6 +2,7 @@ package participant
 
 import (
   "sync"
+  "fmt"
 )
 
 type Object struct {
@@ -11,9 +12,11 @@ type Object struct {
 }
 
 func (o Object) setKey(value string) {
+  fmt.Printf("In setKey: %v is value\n", value)
   o.lock.Lock()
   o.Value = value
   o.lock.Unlock()
+  fmt.Println(o)
 }
 
 func (o Object) getKey() string {
