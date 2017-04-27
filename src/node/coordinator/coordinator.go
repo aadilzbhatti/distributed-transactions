@@ -62,9 +62,9 @@ func (c Coordinator) joinParticipant(id int) {
       continue
 
     } else {
-      defer client.Close()
       var reply participant.Participant
       err = client.Call("Participant.Join", nil, &reply)
+      log.Println("Did da join")
 
       if err != nil {
         log.Println("Error in join: ", err)
@@ -77,6 +77,7 @@ func (c Coordinator) joinParticipant(id int) {
         mutex.Unlock()
         log.Printf("Server %v joined the system\n", serverId)
       }
+      client.Close()
       return
     }
   }
