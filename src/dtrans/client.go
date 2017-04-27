@@ -18,7 +18,8 @@ func Begin() (error, int32) {
   }
 
   var reply int32
-  err = client.Call("Coordinator.Begin", nil, &reply)
+  ba := coordinator.BeginArgs{}
+  err = client.Call("Coordinator.Begin", &ba, &reply)
   return err, reply
 }
 
