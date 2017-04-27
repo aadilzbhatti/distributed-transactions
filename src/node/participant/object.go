@@ -9,7 +9,7 @@ var lock = &sync.RWMutex{}
 type Object struct {
   Key string
   Value string
-  // Lock *sync.RWMutex
+  lock *sync.RWMutex
 }
 
 func (o Object) setKey(value string) {
@@ -27,6 +27,6 @@ func (o Object) getKey() string {
 }
 
 func NewObject(key string, value string) Object {
-  // var mutex = &sync.RWMutex{}
-  return Object{key, value}
+  m := &sync.RWMutex{}
+  return Object{key, value, m}
 }
