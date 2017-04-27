@@ -22,6 +22,7 @@ func Start() {
       break
     }
   }
+  fmt.Printf("Node ID is %v\n", nodeId)
   if nodeId == 1 {
     // if id is 1, is Coordinator
     go coordinator.Start()
