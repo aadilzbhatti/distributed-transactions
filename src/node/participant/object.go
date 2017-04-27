@@ -29,11 +29,11 @@ func (o *Object) stop() {
 }
 
 func (o *Object) setKey(value string, trans int32) {
+	o.lock.Lock()
 	for o.running && trans != o.currTrans {
 		o.cond.Wait()
 	}
 	fmt.Printf("In setKey: %v is value\n", value)
-	o.lock.Lock()
 	o.Value = value
 	o.running = true
 	o.currTrans = trans
