@@ -33,15 +33,27 @@ type GetArgs struct {
   Key string
 }
 
+type BeginArgs struct {}
+
 func (p *Participant) Join(ja *JoinArgs, reply *Participant) error {
   log.Println("In join!")
   *reply = self
   return nil
 }
 
+func (p *Participant) Begin(ba *BeginArgs, reply *bool) error {
+  for k, _ := range self.Objects {
+    self.Objects[k].start()
+  }
+
+  *reply = true
+  log.Println("Initialized all objects for transaction")
+  return nil
+}
+
 func (p *Participant) CanCommit(cca *CanCommitArgs, reply *bool) error {
   if value, ok := self.Transactions[cca.Tid]; ok {
-    *reply = !value.Failed
+    *reply = !value.hasFailed()
     return nil
   }
   return fmt.Errorf("No such transaction in server")
@@ -49,7 +61,7 @@ func (p *Participant) CanCommit(cca *CanCommitArgs, reply *bool) error {
 
 func (p *Participant) DoCommit(dca *DoCommitArgs, reply *bool) error {
   if value, ok := self.Transactions[dca.Tid]; ok {
-    value.Commit()
+    value.commit()
     *reply = true
     return nil
   }
@@ -58,7 +70,7 @@ func (p *Participant) DoCommit(dca *DoCommitArgs, reply *bool) error {
 
 func (p *Participant) DoAbort(daa *DoAbortArgs, reply *bool) error {
   if value, ok := self.Transactions[daa.Tid]; ok {
-    value.Abort()
+    value.abort()
     *reply = true
     return nil
   }
@@ -74,7 +86,7 @@ func (p *Participant) SetKey(sa *SetArgs, reply *bool) error {
   } else {
     // we need to start a new transaction
     t := Transaction{sa.Tid, false}
-    self.Transactions[sa.Tid] = t
+    self.Transactions[sa.Tid] = &t
   }
   if _, ok := self.Objects[sa.Key]; ok {
     self.Objects[sa.Key].setKey(sa.Value)
@@ -97,7 +109,7 @@ func (p *Participant) GetKey(ga *GetArgs, reply *string) error {
   } else {
     // we need to start a new transaction
     t := Transaction{ga.Tid, false}
-    self.Transactions[ga.Tid] = t
+    self.Transactions[ga.Tid] = &t
   }
   if v, ok := self.Objects[ga.Key]; ok {
     *reply = v.getKey()

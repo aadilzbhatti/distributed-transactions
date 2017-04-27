@@ -9,12 +9,23 @@ type Object struct {
   Key string
   Value string
   lock *sync.RWMutex
+  writtenTo bool
+}
+
+func (o *Object) start() {
+  o.lock.Lock()
+  o.writtenTo = false
+  o.lock.Unlock()
 }
 
 func (o *Object) setKey(value string) {
+  for o.writtenTo {
+
+  }
   fmt.Printf("In setKey: %v is value\n", value)
   o.lock.Lock()
   o.Value = value
+  o.writtenTo = true
   o.lock.Unlock()
   fmt.Println(o)
 }
@@ -30,5 +41,5 @@ func (o *Object) getKey() string {
 
 func NewObject(key string, value string) *Object {
   m := &sync.RWMutex{}
-  return &Object{key, value, m}
+  return &Object{key, value, m, false}
 }

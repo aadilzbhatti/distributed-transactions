@@ -33,6 +33,22 @@ type CommitArgs struct {
 
 func (c Coordinator) Begin(ba *BeginArgs, reply *int32) error {
   log.Println("In Begin!")
+  for _, s := range self.Participants {
+    client, err := rpc.Dial("tcp", fmt.Sprintf("%s:%d", s.Address, 3000))
+    if err != nil {
+      log.Println("Error in Begin/Dial:", err)
+      return err
+    }
+
+    pba := participant.BeginArgs{}
+    var r bool
+    err = client.Call("Participant.Begin", &pba, &r)
+    if err != nil {
+      log.Println("Error in Begin/RPC:", err)
+      return err
+    }
+    client.Close()
+  }
   *reply = int32(time.Now().Unix())
   return nil
 }

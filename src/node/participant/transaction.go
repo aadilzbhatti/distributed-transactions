@@ -2,13 +2,17 @@ package participant
 
 type Transaction struct {
   Tid int32
-  Failed bool
+  failed bool
 }
 
-func (t Transaction) Commit() {
-
+func (t Transaction) hasFailed() bool {
+  return t.failed
 }
 
-func (t Transaction) Abort() {
+func (t *Transaction) commit() {
+  t.failed = false
+}
 
+func (t *Transaction) abort() {
+  t.failed = true
 }
