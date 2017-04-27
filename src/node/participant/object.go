@@ -20,6 +20,7 @@ func (o *Object) setKey(value string) {
 }
 
 func (o *Object) getKey() string {
+  fmt.Println("In getKey!")
   var res string
   o.lock.RLock()
   res = o.Value

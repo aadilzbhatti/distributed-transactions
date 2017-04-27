@@ -8,7 +8,7 @@ import (
   "node"
 )
 
-var currentId int32
+var currentId int32 = 0
 
 func Start() {
   go node.Start()
@@ -58,6 +58,9 @@ func runCommand(cmds []string, i int) {
     fmt.Printf("Beginning transaction %v\n", tid)
 
   } else if cmds[i] == "SET" {
+    if currentId == 0 {
+      fmt.Printf("Error: Must begin transaction before calling SET")
+    }
     err := Set(cmds[i + 1], cmds[i + 2], cmds[i + 3], currentId)
     if err != nil {
       fmt.Println("Could not set: ", err)
@@ -66,13 +69,22 @@ func runCommand(cmds []string, i int) {
     fmt.Printf("SETTING %v.%v = %v\n", cmds[i + 1], cmds[i + 2], cmds[i + 3])
 
   } else if cmds[i] == "GET" {
+    if currentId == 0 {
+      fmt.Printf("Error: Must begin transaction before calling GET")
+    }
     res := Get(cmds[i + 1], cmds[i + 2], currentId)
     fmt.Printf("%v.%v = %v\n", cmds[i + 1], cmds[i + 2], res)
 
   } else if cmds[i] == "COMMIT" {
+    if currentId == 0 {
+      fmt.Printf("Error: Must begin transaction before calling COMMIT")
+    }
     // commit_transaction
     fmt.Println("COMMITTING")
   } else if cmds[i] == "ABORT" {
+    if currentId == 0 {
+      fmt.Printf("Error: Must begin transaction before calling ABORT")
+    }
     // abort_transaction
     fmt.Println("ABORTING")
   } else {
