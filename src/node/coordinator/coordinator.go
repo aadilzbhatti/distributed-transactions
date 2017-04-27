@@ -18,6 +18,7 @@ type Coordinator struct {
 }
 
 func Start() error {
+  log.Println("Starting coordinator..")
   self = New()
 
   // set up RPCs
@@ -53,6 +54,7 @@ func (c Coordinator) setupRPC() error {
 }
 
 func (c Coordinator) joinParticipant(id int) {
+  log.Printf("Trying to join node %v\n", id)
   hostname := fmt.Sprintf("%s:%d", fmt.Sprintf(host, id), 4000)
   for {
     client, err := rpc.Dial("tcp", hostname)
