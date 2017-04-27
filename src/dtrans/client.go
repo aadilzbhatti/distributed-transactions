@@ -30,6 +30,7 @@ func Set(serverId string, key string, value string, currId int32) error {
     return err
   }
 
+  log.Printf("Calling on server %v\n", serverId)
   sa := coordinator.SetArgs{currId, serverId, key, value}
   var reply bool
   err = client.Call("Coordinator.Set", &sa, &reply)
