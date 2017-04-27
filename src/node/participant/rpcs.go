@@ -78,6 +78,7 @@ func (p *Participant) SetKey(sa *SetArgs, reply *bool) error {
   }
   if _, ok := self.Objects[sa.Key]; ok {
     self.Objects[sa.Key].setKey(sa.Value)
+    log.Printf("Just reset %v to %v=%v\n", sa.Key, sa.Key, self.Objects[sa.Key])
   } else {
     mutex.Lock()
     self.Objects[sa.Key] = NewObject(sa.Key, sa.Value)
@@ -85,6 +86,7 @@ func (p *Participant) SetKey(sa *SetArgs, reply *bool) error {
   }
   *reply = true
   log.Printf("Finished setting %v = %v\n", sa.Key, sa.Value)
+  log.Println(self.Objects[sa.Key])
   return nil
 }
 
