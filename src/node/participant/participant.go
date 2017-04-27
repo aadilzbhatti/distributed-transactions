@@ -20,6 +20,7 @@ var wg sync.WaitGroup
 func Start(hostname string, id int) error {
   log.Println("Starting participant")
   self = New(hostname, id)
+  log.Println(self)
   go self.setupRPC()
   wg.Add(1)
   wg.Wait()
