@@ -4,8 +4,6 @@ import (
   "sync"
 )
 
-var lock = &sync.RWMutex{}
-
 type Object struct {
   Key string
   Value string
@@ -13,16 +11,16 @@ type Object struct {
 }
 
 func (o Object) setKey(value string) {
-  lock.Lock()
+  o.lock.Lock()
   o.Value = value
-  lock.Unlock()
+  o.lock.Unlock()
 }
 
 func (o Object) getKey() string {
   var res string
-  lock.RLock()
+  o.lock.RLock()
   res = o.Value
-  lock.RUnlock()
+  o.lock.RUnlock()
   return res
 }
 
