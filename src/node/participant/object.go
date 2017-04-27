@@ -4,27 +4,29 @@ import (
   "sync"
 )
 
+var lock = &sync.RWMutex{}
+
 type Object struct {
   Key string
   Value string
-  Lock *sync.RWMutex
+  // Lock *sync.RWMutex
 }
 
 func (o Object) setKey(value string) {
-  o.Lock.Lock()
+  lock.Lock()
   o.Value = value
-  o.Lock.Unlock()
+  lock.Unlock()
 }
 
 func (o Object) getKey() string {
   var res string
-  o.Lock.RLock()
+  lock.RLock()
   res = o.Value
-  o.Lock.RUnlock()
+  lock.RUnlock()
   return res
 }
 
 func NewObject(key string, value string) Object {
-  var mutex = &sync.RWMutex{}
-  return Object{key, value, mutex}
+  // var mutex = &sync.RWMutex{}
+  return Object{key, value}
 }
