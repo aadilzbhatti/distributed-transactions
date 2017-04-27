@@ -86,7 +86,8 @@ func runCommand(cmds []string, i int) {
 			fmt.Println("Error in commit:", err)
 			return
 		}
-		fmt.Println("COMMITTING")
+		fmt.Println("OK")
+    currentId = 0
 
 	} else if cmds[i] == "ABORT" {
 		if currentId == 0 {
@@ -98,7 +99,9 @@ func runCommand(cmds []string, i int) {
 			fmt.Println("Error in abort:", err)
 			return
 		}
-		fmt.Println("ABORTING")
+
+		fmt.Println("OK")
+    currentId = 0
 
 	} else {
 		fmt.Println("Error: Invalid command")

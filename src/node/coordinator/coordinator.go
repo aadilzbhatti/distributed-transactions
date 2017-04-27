@@ -55,8 +55,10 @@ func (c Coordinator) setupRPC() error {
 }
 
 func (c Coordinator) joinParticipant(id int) {
-	log.Printf("Trying to join node %v\n", id)
+  serverId := string(rune('A' + (id - 2)))
+	log.Printf("Trying to join node %v\n", serverId)
 	hostname := fmt.Sprintf("%s:%d", fmt.Sprintf(host, id), 3000)
+  
 	for {
 		client, err := rpc.Dial("tcp", hostname)
 		if err != nil {
@@ -66,14 +68,11 @@ func (c Coordinator) joinParticipant(id int) {
 			var reply participant.Participant
 			ja := participant.JoinArgs{}
 			err = client.Call("Participant.Join", &ja, &reply)
-			log.Println("Did da join")
 
 			if err != nil {
 				log.Println("Error in join: ", err)
 
 			} else {
-				serverId := string(rune('A' + (id - 2)))
-
 				mutex.Lock()
 				c.Participants[serverId] = reply
 				mutex.Unlock()

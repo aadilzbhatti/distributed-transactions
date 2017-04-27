@@ -36,7 +36,6 @@ type GetArgs struct {
 type BeginArgs struct{}
 
 func (p *Participant) Join(ja *JoinArgs, reply *Participant) error {
-	log.Println("In join!")
 	*reply = self
 	return nil
 }
