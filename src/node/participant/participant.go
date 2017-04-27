@@ -16,6 +16,7 @@ type Participant struct {
 var self Participant
 
 func Start(hostname string, id int) error {
+  log.Println("Starting participant")
   self := New(hostname, id)
   go self.setupRPC()
   return nil
