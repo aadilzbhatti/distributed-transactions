@@ -23,6 +23,7 @@ func Start(hostname string, id int) error {
 }
 
 func (p Participant) setupRPC() error {
+  log.Println("Setting up participant RPCs")
   rpc.Register(&self)
   l, e := net.Listen("tcp", ":3000")
   if e != nil {
