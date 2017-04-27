@@ -11,7 +11,7 @@ type Object struct {
   lock *sync.RWMutex
 }
 
-func (o Object) setKey(value string) {
+func (o *Object) setKey(value string) {
   fmt.Printf("In setKey: %v is value\n", value)
   o.lock.Lock()
   o.Value = value
@@ -19,7 +19,7 @@ func (o Object) setKey(value string) {
   fmt.Println(o)
 }
 
-func (o Object) getKey() string {
+func (o *Object) getKey() string {
   var res string
   o.lock.RLock()
   res = o.Value
@@ -27,7 +27,7 @@ func (o Object) getKey() string {
   return res
 }
 
-func NewObject(key string, value string) Object {
+func NewObject(key string, value string) *Object {
   m := &sync.RWMutex{}
-  return Object{key, value, m}
+  return &Object{key, value, m}
 }

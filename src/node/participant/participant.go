@@ -8,7 +8,7 @@ import (
 )
 
 type Participant struct {
-  Objects map[string]Object
+  Objects map[string]*Object
   Transactions map[int32]Transaction
   Address string
   Id int
@@ -38,7 +38,7 @@ func (p Participant) setupRPC()  {
 }
 
 func New(addr string, id int) Participant {
-  objs := make(map[string]Object, 0)
+  objs := make(map[string]*Object, 0)
   trans := make(map[int32]Transaction, 0)
   return Participant{objs, trans, addr, id}
 }
