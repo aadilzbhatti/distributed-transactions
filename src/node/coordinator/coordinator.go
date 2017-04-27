@@ -58,9 +58,9 @@ func (c Coordinator) joinParticipant(id int) {
   log.Printf("Trying to join node %v\n", id)
   hostname := fmt.Sprintf("%s:%d", fmt.Sprintf(host, id), 4000)
   for {
-    fmt.Println("Here")
     client, err := rpc.Dial("tcp", hostname)
     if err != nil {
+      log.Println(err)
       continue
 
     } else {
