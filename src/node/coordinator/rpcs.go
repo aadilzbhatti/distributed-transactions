@@ -38,6 +38,7 @@ func (c Coordinator) Begin(ba *BeginArgs, reply *int32) error {
 }
 
 func (c Coordinator) Set(sa *SetArgs, reply *bool) error {
+  log.Printf("%v\n", self.Participants)
   if p, ok := c.Participants[sa.ServerId]; ok {
     client, err := rpc.Dial("tcp", fmt.Sprintf("%s:%d", p.Address, 3000))
     if err != nil {
