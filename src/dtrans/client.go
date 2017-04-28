@@ -93,5 +93,9 @@ func Commit() error {
 		return err
 	}
 
+  if !reply {
+    return Abort()
+  }
+  
 	return nil
 }

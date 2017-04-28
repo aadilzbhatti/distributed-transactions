@@ -58,7 +58,7 @@ func runCommand(cmds []string, i int) {
 
 	} else if cmds[i] == "SET" {
 		if currentId == 0 {
-			fmt.Printf("Error: Must begin transaction before calling SET")
+			fmt.Println("Error: Must begin transaction before calling SET")
 			return
 		}
 		err := Set(cmds[i+1], cmds[i+2], cmds[i+3], currentId)
@@ -70,7 +70,7 @@ func runCommand(cmds []string, i int) {
 
 	} else if cmds[i] == "GET" {
 		if currentId == 0 {
-			fmt.Printf("Error: Must begin transaction before calling GET")
+			fmt.Println("Error: Must begin transaction before calling GET")
 			return
 		}
 		res := Get(cmds[i+1], cmds[i+2], currentId)
@@ -78,7 +78,7 @@ func runCommand(cmds []string, i int) {
 
 	} else if cmds[i] == "COMMIT" {
 		if currentId == 0 {
-			fmt.Printf("Error: Must begin transaction before calling COMMIT")
+			fmt.Println("Error: Must begin transaction before calling COMMIT")
 			return
 		}
 		err := Commit()
@@ -91,7 +91,7 @@ func runCommand(cmds []string, i int) {
 
 	} else if cmds[i] == "ABORT" {
 		if currentId == 0 {
-			fmt.Printf("Error: Must begin transaction before calling ABORT")
+			fmt.Println("Error: Must begin transaction before calling ABORT")
 			return
 		}
 		err := Abort()

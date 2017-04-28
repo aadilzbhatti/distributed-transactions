@@ -74,11 +74,12 @@ func (p *Participant) DoCommit(dca *DoCommitArgs, reply *bool) error {
 }
 
 func (p *Participant) DoAbort(daa *DoAbortArgs, reply *bool) error {
-	if value, ok := self.Transactions[daa.Tid]; ok {
+	if trans, ok := self.Transactions[daa.Tid]; ok {
 		for k := range self.Objects {
 			self.Objects[k].stop()
+      self.Objects[k] = trans.initial[k]
 		}
-		value.abort()
+		trans.abort()
 		*reply = true
 		return nil
 	}
@@ -91,12 +92,14 @@ func (p *Participant) SetKey(sa *SetArgs, reply *bool) error {
 	if trans, ok := self.Transactions[sa.Tid]; ok {
 		// we are executing a running transaction
 		log.Println(trans)
-
 	} else {
-		log.Println("In here?")
 		// we need to start a new transaction
-		t := Transaction{sa.Tid, false}
-		self.Transactions[sa.Tid] = &t
+		self.Transactions[sa.Tid] = NewTransaction(sa.Tid)
+
+    // set initial state of transaction
+    for k, _ := range self.Objects {
+			self.Transactions[sa.Tid].addObject(k, self.Objects[k])
+		}
 	}
 	if _, ok := self.Objects[sa.Key]; ok {
 		self.Objects[sa.Key].setKey(sa.Value, sa.Tid)
@@ -113,18 +116,22 @@ func (p *Participant) SetKey(sa *SetArgs, reply *bool) error {
 }
 
 func (p *Participant) GetKey(ga *GetArgs, reply *string) error {
-	if _, ok := self.Transactions[ga.Tid]; ok {
+	if trans, ok := self.Transactions[ga.Tid]; ok {
 		// we are executing a running Transaction
-
+    log.Println(trans)
 	} else {
 		// we need to start a new transaction
-		t := Transaction{ga.Tid, false}
-		self.Transactions[ga.Tid] = &t
+		self.Transactions[ga.Tid] = NewTransaction(ga.Tid)
+
+		// set initial state of transaction
+		for k, _ := range self.Objects {
+			self.Transactions[ga.Tid].addObject(k, self.Objects[k])
+		}
 	}
 	if v, ok := self.Objects[ga.Key]; ok {
 		*reply = v.getKey(ga.Tid)
 	} else {
-		reply = nil
+		*reply = "NOT FOUND"
 		return fmt.Errorf("No such object in server")
 	}
 	return nil
