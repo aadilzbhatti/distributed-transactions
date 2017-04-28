@@ -42,12 +42,12 @@ func (o *Object) setKey(value string, trans int32) {
 }
 
 func (o *Object) getKey(trans int32) string {
+	o.lock.RLock()
 	for o.running && trans != o.currTrans {
 		o.cond.Wait()
 	}
 	fmt.Println("In getKey!")
 	var res string
-	o.lock.RLock()
 	res = o.Value
 	o.lock.RUnlock()
 	return res

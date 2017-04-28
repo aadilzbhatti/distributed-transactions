@@ -51,6 +51,7 @@ func (p *Participant) Begin(ba *BeginArgs, reply *bool) error {
 }
 
 func (p *Participant) CanCommit(cca *CanCommitArgs, reply *bool) error {
+	log.Println(self.Transactions, cca.Tid)
 	if value, ok := self.Transactions[cca.Tid]; ok {
 		*reply = !value.hasFailed()
 		return nil
