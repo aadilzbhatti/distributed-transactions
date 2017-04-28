@@ -90,6 +90,7 @@ func (p *Participant) SetKey(sa *SetArgs, reply *bool) error {
 		log.Println(trans)
 
 	} else {
+		log.Println("In here?")
 		// we need to start a new transaction
 		t := Transaction{sa.Tid, false}
 		self.Transactions[sa.Tid] = &t
