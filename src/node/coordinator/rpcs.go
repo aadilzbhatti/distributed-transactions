@@ -104,6 +104,7 @@ func (c Coordinator) Commit(ca *CommitArgs, reply *bool) error {
 	// check if we can commit
 	cca := participant.CanCommitArgs{ca.Tid}
 	for _, p := range self.Participants {
+		log.Printf("Calling CanCommit on %v\n", p)
 		client, err := rpc.Dial("tcp", fmt.Sprintf("%s:%d", p.Address, 3000))
 		if err != nil {
 			log.Println("Error in Commit/Dial:", err)
@@ -121,6 +122,7 @@ func (c Coordinator) Commit(ca *CommitArgs, reply *bool) error {
 
 		if !check {
 			*reply = false
+			log.Println("Someone said no!")
 			client.Close()
 			return nil
 		}

@@ -56,14 +56,14 @@ func (p *Participant) CanCommit(cca *CanCommitArgs, reply *bool) error {
 		log.Println("In here!")
 		*reply = !value.hasFailed()
 		return nil
-	} 
+	}
 	log.Println("Should not get here..")
 	return fmt.Errorf("No such transaction in server")
 }
 
 func (p *Participant) DoCommit(dca *DoCommitArgs, reply *bool) error {
 	if value, ok := self.Transactions[dca.Tid]; ok {
-		for k := range self.Objects {
+		for k, _ := range self.Objects {
 			self.Objects[k].stop()
 		}
 		value.commit()
