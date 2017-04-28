@@ -145,7 +145,7 @@ func (c Coordinator) Commit(ca *CommitArgs, reply *bool) error {
 
 		var check bool
 		err = client.Call("Participant.DoCommit", &dca, &check)
-		if err != nil {
+		if err != nil && err.Error() != "No such transaction in server" {
 			log.Println("Error in DoCommit/RPC:", err)
 			client.Close()
 			return err
