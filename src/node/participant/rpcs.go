@@ -53,9 +53,11 @@ func (p *Participant) Begin(ba *BeginArgs, reply *bool) error {
 func (p *Participant) CanCommit(cca *CanCommitArgs, reply *bool) error {
 	log.Println(self.Transactions, cca.Tid)
 	if value, ok := self.Transactions[cca.Tid]; ok {
+		log.Println("In here!")
 		*reply = !value.hasFailed()
 		return nil
-	}
+	} 
+	log.Println("Should not get here..")
 	return fmt.Errorf("No such transaction in server")
 }
 

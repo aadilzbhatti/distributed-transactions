@@ -113,7 +113,7 @@ func (c Coordinator) Commit(ca *CommitArgs, reply *bool) error {
 
 		var check bool
 		err = client.Call("Participant.CanCommit", &cca, &check)
-		if err != nil {
+		if err != nil && err.Error() != "No such transaction in server" {
 			log.Println("Error in Commit/RPC:", err)
 			client.Close()
 			return err
