@@ -29,6 +29,17 @@ func (o *Object) stop() {
 	o.lock.Unlock()
 }
 
+func (o *Object) resetKey(value string, trans int32) {
+	o.lock.Lock()
+	for o.running && trans != o.currTrans {
+		o.cond.Wait()
+	}
+	fmt.Printf("In resetKey: %v->%v\n", o.Value, value)
+	o.Value = value
+	o.currTrans = 0
+	o.lock.Unlock()
+}
+
 func (o *Object) setKey(value string, trans int32) {
 	o.lock.Lock()
 	for o.running && trans != o.currTrans {

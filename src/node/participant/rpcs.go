@@ -77,7 +77,7 @@ func (p *Participant) DoAbort(daa *DoAbortArgs, reply *bool) error {
 	if trans, ok := self.Transactions[daa.Tid]; ok {
 		for k := range self.Objects {
 			self.Objects[k].stop()
-      self.Objects[k] = trans.initial[k]
+      self.Objects[k].resetKey(trans.initial[k].Value, daa.Tid)
 		}
 		trans.abort()
 		*reply = true
