@@ -21,6 +21,7 @@ func (o *Object) start() {
 }
 
 func (o *Object) stop() {
+	fmt.Println("Called stop!")
 	o.lock.Lock()
 	o.running = false
 	o.currTrans = 0
