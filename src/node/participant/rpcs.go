@@ -83,8 +83,7 @@ func (p *Participant) DoAbort(daa *DoAbortArgs, reply *bool) error {
 		*reply = true
 		return nil
 	}
-	log.Println("No such transaction in server")
-	return nil
+	return fmt.Errorf("No such transaction in server")
 }
 
 func (p *Participant) SetKey(sa *SetArgs, reply *bool) error {
