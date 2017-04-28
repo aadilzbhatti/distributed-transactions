@@ -3,15 +3,15 @@ package participant
 type Transaction struct {
 	Tid    int32
 	failed bool
-  initial map[string]*Object
+  initial map[string]Object
 	updates []string
 }
 
 func NewTransaction(tid int32) *Transaction {
-  return &Transaction{tid, false, make(map[string]*Object, 0), make([]string, 0)}
+  return &Transaction{tid, false, make(map[string]Object, 0), make([]string, 0)}
 }
 
-func (t *Transaction) addObject(key string, obj *Object) {
+func (t *Transaction) addObject(key string, obj Object) {
 	t.initial[key] = obj
 }
 

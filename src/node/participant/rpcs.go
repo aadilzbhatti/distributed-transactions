@@ -97,7 +97,7 @@ func (p *Participant) SetKey(sa *SetArgs, reply *bool) error {
 
     // set initial state of transaction
     for k, _ := range self.Objects {
-			self.Transactions[sa.Tid].addObject(k, self.Objects[k])
+			self.Transactions[sa.Tid].addObject(k, *self.Objects[k])
 		}
 	}
 	if _, ok := self.Objects[sa.Key]; ok {
@@ -124,7 +124,7 @@ func (p *Participant) GetKey(ga *GetArgs, reply *string) error {
 
 		// set initial state of transaction
 		for k, _ := range self.Objects {
-			self.Transactions[ga.Tid].addObject(k, self.Objects[k])
+			self.Transactions[ga.Tid].addObject(k, *self.Objects[k])
 		}
 	}
 	if v, ok := self.Objects[ga.Key]; ok {
