@@ -160,8 +160,9 @@ func (c Coordinator) Commit(ca *CommitArgs, reply *bool) error {
 func (c Coordinator) Abort(aa *AbortArgs, reply *bool) error {
 	paa := participant.DoAbortArgs{aa.Tid}
 	for _, p := range self.Participants {
+		log.Println(p)
 		client, err := rpc.Dial("tcp", fmt.Sprintf("%s:%d", p.Address, 3000))
-		if err != nil {
+		if err != nil && err.Error() != "No such transaction in server" {
 			log.Println("Error in Abort/Dial:", err)
 			return err
 		}
