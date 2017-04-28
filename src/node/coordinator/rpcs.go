@@ -162,14 +162,14 @@ func (c Coordinator) Abort(aa *AbortArgs, reply *bool) error {
 	for _, p := range self.Participants {
 		log.Println(p)
 		client, err := rpc.Dial("tcp", fmt.Sprintf("%s:%d", p.Address, 3000))
-		if err != nil && err.Error() != "No such transaction in server" {
+		if err != nil {
 			log.Println("Error in Abort/Dial:", err)
 			return err
 		}
 
 		var check bool
 		err = client.Call("Participant.DoAbort", &paa, &check)
-		if err != nil {
+		if err != nil && err.Error() != "No such transaction in server" {
 			log.Println("Error in DoAbort/RPC:", err)
 			client.Close()
 			return err
