@@ -68,6 +68,7 @@ func (o *Object) getKey(trans int32) string {
 		fmt.Println("BADABING", self.held[key])
 		self.held[key].lock.Lock()
 		for self.held[key].holding && self.held[key].currId != trans {
+			fmt.Println("BROKEN!")
 			self.held[key].cond.Wait()
 		}
 		self.held[key].lock.Unlock()
