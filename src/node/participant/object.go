@@ -74,6 +74,7 @@ func (o *Object) getKey() string {
 		o.lock.RUnlock()
 		return res
 	}
+	return o.Value
 }
 
 func NewObject(key string, value string, trans int32) *Object {
