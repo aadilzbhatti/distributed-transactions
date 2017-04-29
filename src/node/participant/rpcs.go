@@ -160,7 +160,6 @@ func (p *Participant) GetKey(ga *GetArgs, reply *string) error {
 	}
 
 
-// BUG check own objects as well as current updates for key
 	if v, ok := self.Transactions[ga.Tid].updates[ga.Key]; ok {
 		if v.currTrans != ga.Tid && v.currTrans != 0 {
 			log.Println(v)
@@ -175,6 +174,7 @@ func (p *Participant) GetKey(ga *GetArgs, reply *string) error {
 		}
 		*reply = self.Transactions[ga.Tid].updates[ga.Key].getKey()
 		log.Println("o", *reply)
+
 	} else if v, ok := self.Objects[ga.Key]; ok {
 		if v.currTrans != ga.Tid && v.currTrans != 0 {
 			log.Println(v)
@@ -183,7 +183,7 @@ func (p *Participant) GetKey(ga *GetArgs, reply *string) error {
 			return nil
 		} else if _, ok2 := self.Transactions[ga.Tid].updates[ga.Key]; !ok2 {
 			log.Println(v)
-			*reply = v.Value
+			*reply = v.getKey()
 			log.Println("Achoo!", *reply)
 			return nil
 		}
