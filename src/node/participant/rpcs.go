@@ -126,6 +126,7 @@ func (p *Participant) SetKey(sa *SetArgs, reply *bool) error {
 	if _, ok := self.Transactions[sa.Tid].updates[sa.Key]; ok {
 		self.Transactions[sa.Tid].updateObject(sa.Key, sa.Value)
 		log.Printf("Reseting %v to %v=%v\n", sa.Key, sa.Key, self.Objects[sa.Key])
+		self.held[sa.Key] = NewHeld(sa.Key, sa.Tid)
 
 	} else {
 		obj := NewObject(sa.Key, sa.Value, sa.Tid)
@@ -158,7 +159,6 @@ func (p *Participant) GetKey(ga *GetArgs, reply *string) error {
 			}
 		}
 	}
-
 
 	if v, ok := self.Transactions[ga.Tid].updates[ga.Key]; ok {
 		if v.currTrans != ga.Tid && v.currTrans != 0 {
