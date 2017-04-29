@@ -183,7 +183,7 @@ func (p *Participant) GetKey(ga *GetArgs, reply *string) error {
 			return nil
 		} else if _, ok2 := self.Transactions[ga.Tid].updates[ga.Key]; !ok2 {
 			log.Println(v)
-			*reply = self.Transactions[ga.Tid].initial[ga.Key].Value
+			*reply = v.Value
 			log.Println("Achoo!", *reply)
 			return nil
 		}
