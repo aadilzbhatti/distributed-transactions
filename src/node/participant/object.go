@@ -53,16 +53,15 @@ func (o *Object) setKey(value string, trans int32) {
 	fmt.Println(o)
 }
 
-func (o *Object) getKey(trans int32) string {
-	o.lock.Lock()
-	for o.running && trans != o.currTrans {
-		o.cond.Wait()
-	}
-	o.lock.Unlock()
-	fmt.Println("In getKey!")
-	o.lock.RLock() // TODO fix this -- causes error with cond since unlocked?
-	var res string
-	res = o.Value
+func (o *Object) getKey() string {
+	// o.lock.Lock()
+	// for o.running && trans != o.currTrans {
+	// 	o.cond.Wait()
+	// }
+	// o.lock.Unlock()
+	// fmt.Println("In getKey!")
+	o.lock.RLock()
+	res := o.Value
 	o.lock.RUnlock()
 	return res
 }

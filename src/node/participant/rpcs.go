@@ -100,14 +100,17 @@ func (p *Participant) SetKey(sa *SetArgs, reply *bool) error {
 			self.Transactions[sa.Tid].addObject(k, *self.Objects[k])
 		}
 	}
+
 	if _, ok := self.Objects[sa.Key]; ok {
 		self.Objects[sa.Key].setKey(sa.Value, sa.Tid)
+		// self.Transactions[sa.Key].updateObject()
 		log.Printf("Just reset %v to %v=%v\n", sa.Key, sa.Key, self.Objects[sa.Key])
 	} else {
 		mutex.Lock()
 		self.Objects[sa.Key] = NewObject(sa.Key, sa.Value, sa.Tid)
 		mutex.Unlock()
 	}
+
 	*reply = true
 	log.Printf("Finished setting %v = %v\n", sa.Key, sa.Value)
 	log.Println(self.Objects[sa.Key])
@@ -128,7 +131,11 @@ func (p *Participant) GetKey(ga *GetArgs, reply *string) error {
 		}
 	}
 	if v, ok := self.Objects[ga.Key]; ok {
-		*reply = v.getKey(ga.Tid)
+		if v.currTrans != ga.Tid {
+			*reply = self.Transactions[ga.Tid].initial[ga.Key].Value
+			return nil
+		}
+		*reply = v.getKey()
 	} else {
 		*reply = "NOT FOUND"
 		return fmt.Errorf("No such object in server")

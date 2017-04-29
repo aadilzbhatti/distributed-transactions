@@ -4,19 +4,19 @@ type Transaction struct {
 	Tid    int32
 	failed bool
   initial map[string]Object
-	updates []string
+	updates map[string]*Object
 }
 
 func NewTransaction(tid int32) *Transaction {
-  return &Transaction{tid, false, make(map[string]Object, 0), make([]string, 0)}
+  return &Transaction{tid, false, make(map[string]Object, 0), make(map[string]*Object, 0)}
 }
 
 func (t *Transaction) addObject(key string, obj Object) {
 	t.initial[key] = obj
 }
 
-func (t *Transaction) addUpdate(update string) {
-	t.updates = append(t.updates, update)
+func (t *Transaction) updateObject(key string, value *Object) {
+	t.updates[key] = value
 }
 
 func (t *Transaction) hasFailed() bool {
