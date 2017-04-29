@@ -54,5 +54,5 @@ func New(addr string, id int) Participant {
 
 func NewHeld(name string, currId int32) *Held {
 	m := &sync.Mutex{}
-	return &Held{name, currId, false, sync.NewCond(m), m}
+	return &Held{name, currId, true, sync.NewCond(m), m}
 }

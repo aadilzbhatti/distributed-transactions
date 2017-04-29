@@ -65,7 +65,7 @@ func (o *Object) getKey() string {
 	fmt.Println(o)
 	key := o.Key
 	if _, ok := self.held[key]; ok {
-		fmt.Println("BADABING")
+		fmt.Println("BADABING", self.held[key])
 		self.held[key].lock.Lock()
 		for self.held[key].holding {
 			self.held[key].cond.Wait()
@@ -76,7 +76,7 @@ func (o *Object) getKey() string {
 		o.lock.RUnlock()
 		return res
 	}
-	fmt.Println("Badaboom!")
+	fmt.Println("Badaboom!", self.held[key])
 	return o.Value
 }
 
