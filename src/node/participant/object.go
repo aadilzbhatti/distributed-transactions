@@ -46,8 +46,8 @@ func (o *Object) setKey(key string, value string, trans int32) {
 	// 	o.cond.Wait()
 	// }
 
-	self.held[key].lock.Lock()
 	if _, ok := self.held[key]; ok {
+	  self.held[key].lock.Lock()
 		for self.held[key].holding {
 			self.held[key].cond.Wait()
 		}
@@ -69,8 +69,8 @@ func (o *Object) getKey() string {
 }
 
 func NewObject(key string, value string, trans int32) *Object {
-	self.held[key].lock.Lock()
-	if _, ok := self.held[key]; ok {
+  if _, ok := self.held[key]; ok {
+    self.held[key].lock.Lock()
 		for self.held[key].holding {
 			self.held[key].cond.Wait()
 		}
