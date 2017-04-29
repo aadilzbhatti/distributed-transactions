@@ -16,7 +16,7 @@ func (t *Transaction) addObject(key string, obj Object) {
 }
 
 func (t *Transaction) updateObject(key string, value string) {
-	t.updates[key].setKey(value, t.Tid)
+	t.updates[key].setKey(key, value, t.Tid)
 }
 
 func (t *Transaction) hasFailed() bool {
