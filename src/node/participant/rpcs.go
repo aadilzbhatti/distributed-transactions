@@ -168,7 +168,8 @@ func (p *Participant) GetKey(ga *GetArgs, reply *string) error {
 	}
 
 	if v, ok := self.Objects[ga.Key]; ok {
-		if v.currTrans != ga.Tid {
+		if v.currTrans != ga.Tid && v.currTrans != 0 {
+			log.Println(v)
 			*reply = self.Transactions[ga.Tid].initial[ga.Key].Value
 			log.Println("Ah!", *reply)
 			return nil
