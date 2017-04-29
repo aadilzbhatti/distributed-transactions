@@ -88,7 +88,6 @@ func (c Coordinator) Get(ga *GetArgs, reply *string) error {
 		pga := participant.GetArgs{ga.Tid, ga.Key}
 		err = client.Call("Participant.GetKey", &pga, &reply)
 		if err != nil {
-			log.Println("Error in Get/RPC: ", err)
 			return err
 		}
 		return nil

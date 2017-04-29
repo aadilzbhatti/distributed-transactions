@@ -123,16 +123,6 @@ func (p *Participant) SetKey(sa *SetArgs, reply *bool) error {
 		}
 	}
 
-	// if _, ok := self.Objects[sa.Key]; ok {
-	// 	self.Objects[sa.Key].setKey(sa.Value, sa.Tid)
-	// 	self.Transactions[sa.Key].updateObject(sa.Key, sa.Value)
-	// 	log.Printf("Reseting %v to %v=%v\n", sa.Key, sa.Key, self.Objects[sa.Key])
-	// } else {
-	// 	mutex.Lock()
-	// 	self.Objects[sa.Key] = NewObject(sa.Key, sa.Value, sa.Tid)
-	// 	mutex.Unlock()
-	// }
-
 	if _, ok := self.Transactions[sa.Tid].updates[sa.Key]; ok {
 		self.Transactions[sa.Tid].updateObject(sa.Key, sa.Value)
 		log.Printf("Reseting %v to %v=%v\n", sa.Key, sa.Key, self.Objects[sa.Key])

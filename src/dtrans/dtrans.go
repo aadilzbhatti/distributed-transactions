@@ -74,7 +74,9 @@ func runCommand(cmds []string, i int) {
 			return
 		}
 		res := Get(cmds[i+1], cmds[i+2], currentId)
-		fmt.Printf("%v.%v = %v\n", cmds[i+1], cmds[i+2], res)
+		if res != "" {
+			fmt.Printf("%v.%v = %v\n", cmds[i+1], cmds[i+2], res)
+		}
 
 	} else if cmds[i] == "COMMIT" {
 		if currentId == 0 {
