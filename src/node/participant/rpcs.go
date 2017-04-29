@@ -78,6 +78,7 @@ func (p *Participant) DoCommit(dca *DoCommitArgs, reply *bool) error {
 		for k, _ := range self.Objects {
 			self.Objects[k].stop()
 			self.held[k].holding = false
+			self.held[k].currId = 0
 			self.held[k].cond.Broadcast()
 		}
 		value.commit()
@@ -172,7 +173,7 @@ func (p *Participant) GetKey(ga *GetArgs, reply *string) error {
 			log.Println("Achoo!", *reply)
 			return nil
 		}
-		*reply = self.Transactions[ga.Tid].updates[ga.Key].getKey()
+		*reply = self.Transactions[ga.Tid].updates[ga.Key].getKey(ga.Tid)
 		log.Println("o", *reply)
 
 	} else if v, ok := self.Objects[ga.Key]; ok {
@@ -183,11 +184,11 @@ func (p *Participant) GetKey(ga *GetArgs, reply *string) error {
 			return nil
 		} else if _, ok2 := self.Transactions[ga.Tid].updates[ga.Key]; !ok2 {
 			log.Println("BABBA", v)
-			*reply = v.getKey()
+			*reply = v.getKey(ga.Tid)
 			log.Println("Achoo2!", *reply)
 			return nil
 		}
-		*reply = self.Transactions[ga.Tid].updates[ga.Key].getKey()
+		*reply = self.Transactions[ga.Tid].updates[ga.Key].getKey(ga.Tid)
 		log.Println("o", *reply)
 	} else {
 		*reply = "NOT FOUND"

@@ -61,13 +61,13 @@ func (o *Object) setKey(key string, value string, trans int32) {
 	fmt.Println(o)
 }
 
-func (o *Object) getKey() string {
+func (o *Object) getKey(trans int32) string {
 	fmt.Println(o)
 	key := o.Key
 	if _, ok := self.held[key]; ok {
 		fmt.Println("BADABING", self.held[key])
 		self.held[key].lock.Lock()
-		for self.held[key].holding {
+		for self.held[key].holding && self.held[key].currId != trans {
 			self.held[key].cond.Wait()
 		}
 		self.held[key].lock.Unlock()
@@ -83,7 +83,7 @@ func (o *Object) getKey() string {
 func NewObject(key string, value string, trans int32) *Object {
   if _, ok := self.held[key]; ok {
     self.held[key].lock.Lock()
-		for self.held[key].holding {
+		for self.held[key].holding && self.held[key].currId != trans {
 			self.held[key].cond.Wait()
 		}
 	  self.held[key].lock.Unlock()
