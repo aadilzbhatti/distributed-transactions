@@ -41,6 +41,9 @@ func (p *Participant) Join(ja *JoinArgs, reply *Participant) error {
 }
 
 func (p *Participant) Begin(ba *BeginArgs, reply *bool) error {
+	mutex.Lock()
+	defer mutex.Unlock()
+
 	for k := range self.Objects {
 		self.Objects[k].start()
 	}
@@ -51,6 +54,9 @@ func (p *Participant) Begin(ba *BeginArgs, reply *bool) error {
 }
 
 func (p *Participant) CanCommit(cca *CanCommitArgs, reply *bool) error {
+	mutex.Lock()
+	defer mutex.Unlock()
+
 	log.Println(self.Transactions, cca.Tid)
 	if value, ok := self.Transactions[cca.Tid]; ok {
 		log.Println("In here!")
@@ -62,9 +68,17 @@ func (p *Participant) CanCommit(cca *CanCommitArgs, reply *bool) error {
 }
 
 func (p *Participant) DoCommit(dca *DoCommitArgs, reply *bool) error {
+	mutex.Lock()
+	defer mutex.Unlock()
+
 	if value, ok := self.Transactions[dca.Tid]; ok {
+		for k, v := range self.Transactions[dca.Tid].updates {
+			self.Objects[k] = v
+		}
 		for k, _ := range self.Objects {
 			self.Objects[k].stop()
+			self.held[k].holding = false
+			self.held[k].cond.Broadcast()
 		}
 		value.commit()
 		*reply = true
@@ -74,6 +88,9 @@ func (p *Participant) DoCommit(dca *DoCommitArgs, reply *bool) error {
 }
 
 func (p *Participant) DoAbort(daa *DoAbortArgs, reply *bool) error {
+	mutex.Lock()
+	defer mutex.Unlock()
+
 	if trans, ok := self.Transactions[daa.Tid]; ok {
 		for k := range self.Objects {
 			self.Objects[k].stop()
@@ -87,7 +104,10 @@ func (p *Participant) DoAbort(daa *DoAbortArgs, reply *bool) error {
 }
 
 func (p *Participant) SetKey(sa *SetArgs, reply *bool) error {
-	log.Printf("In set!: %v\n", sa)
+	mutex.Lock()
+	defer mutex.Unlock()
+
+	log.Printf("In set: %v\n", sa)
 	if trans, ok := self.Transactions[sa.Tid]; ok {
 		// we are executing a running transaction
 		log.Println(trans)
@@ -101,23 +121,37 @@ func (p *Participant) SetKey(sa *SetArgs, reply *bool) error {
 		}
 	}
 
-	if _, ok := self.Objects[sa.Key]; ok {
-		self.Objects[sa.Key].setKey(sa.Value, sa.Tid)
-		// self.Transactions[sa.Key].updateObject()
-		log.Printf("Just reset %v to %v=%v\n", sa.Key, sa.Key, self.Objects[sa.Key])
+	// if _, ok := self.Objects[sa.Key]; ok {
+	// 	self.Objects[sa.Key].setKey(sa.Value, sa.Tid)
+	// 	self.Transactions[sa.Key].updateObject(sa.Key, sa.Value)
+	// 	log.Printf("Reseting %v to %v=%v\n", sa.Key, sa.Key, self.Objects[sa.Key])
+	// } else {
+	// 	mutex.Lock()
+	// 	self.Objects[sa.Key] = NewObject(sa.Key, sa.Value, sa.Tid)
+	// 	mutex.Unlock()
+	// }
+
+	if _, ok := self.Transactions[sa.Tid].updates[sa.Key]; ok {
+		self.Transactions[sa.Tid].updateObject(sa.Key, sa.Value)
+		log.Printf("Reseting %v to %v=%v\n", sa.Key, sa.Key, self.Objects[sa.Key])
+
 	} else {
-		mutex.Lock()
-		self.Objects[sa.Key] = NewObject(sa.Key, sa.Value, sa.Tid)
-		mutex.Unlock()
+		obj := NewObject(sa.Key, sa.Value, sa.Tid)
+		self.Transactions[sa.Tid].updates[sa.Key] = obj
+		h := NewHeld(sa.Key, sa.Tid)
+		self.held[sa.Key] = h
 	}
 
 	*reply = true
 	log.Printf("Finished setting %v = %v\n", sa.Key, sa.Value)
-	log.Println(self.Objects[sa.Key])
+	log.Println(self.Transactions[sa.Tid].updates[sa.Key])
 	return nil
 }
 
 func (p *Participant) GetKey(ga *GetArgs, reply *string) error {
+	mutex.Lock()
+	defer mutex.Unlock()
+
 	if trans, ok := self.Transactions[ga.Tid]; ok {
 		// we are executing a running Transaction
     log.Println(trans)
@@ -132,15 +166,19 @@ func (p *Participant) GetKey(ga *GetArgs, reply *string) error {
 			}
 		}
 	}
+
 	if v, ok := self.Objects[ga.Key]; ok {
 		if v.currTrans != ga.Tid {
 			*reply = self.Transactions[ga.Tid].initial[ga.Key].Value
+			log.Println("Ah!", *reply)
 			return nil
 		}
-		*reply = v.getKey()
+		*reply = self.Transactions[ga.Tid].updates[ga.Key].getKey()
+		log.Println("o", *reply)
 	} else {
 		*reply = "NOT FOUND"
 		return fmt.Errorf("No such object in server")
 	}
+
 	return nil
 }

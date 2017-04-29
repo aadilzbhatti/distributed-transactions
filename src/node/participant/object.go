@@ -67,6 +67,11 @@ func (o *Object) getKey() string {
 }
 
 func NewObject(key string, value string, trans int32) *Object {
+	if _, ok := self.held[key]; ok {
+		for self.held[key].holding {
+			self.held[key].cond.Wait()
+		}
+	}
 	m := &sync.RWMutex{}
 	c := sync.NewCond(m)
 	return &Object{key, value, m, c, true, trans}
