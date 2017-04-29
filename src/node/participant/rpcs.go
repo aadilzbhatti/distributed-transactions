@@ -95,6 +95,8 @@ func (p *Participant) DoAbort(daa *DoAbortArgs, reply *bool) error {
 		for k := range self.Objects {
 			self.Objects[k].stop()
       self.Objects[k].resetKey(trans.initial[k].Value, daa.Tid)
+			self.held[k].holding = false
+			self.held[k].cond.Broadcast()
 		}
 		trans.abort()
 		*reply = true
