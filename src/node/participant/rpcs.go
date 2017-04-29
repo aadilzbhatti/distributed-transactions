@@ -179,12 +179,12 @@ func (p *Participant) GetKey(ga *GetArgs, reply *string) error {
 		if v.currTrans != ga.Tid && v.currTrans != 0 {
 			log.Println(v)
 			*reply = self.Transactions[ga.Tid].initial[ga.Key].Value
-			log.Println("Ah!", *reply)
+			log.Println("Ah2!", *reply)
 			return nil
 		} else if _, ok2 := self.Transactions[ga.Tid].updates[ga.Key]; !ok2 {
 			log.Println(v)
 			*reply = v.getKey()
-			log.Println("Achoo!", *reply)
+			log.Println("Achoo2!", *reply)
 			return nil
 		}
 		*reply = self.Transactions[ga.Tid].updates[ga.Key].getKey()
