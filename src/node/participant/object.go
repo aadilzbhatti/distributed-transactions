@@ -62,6 +62,7 @@ func (o *Object) setKey(key string, value string, trans int32) {
 }
 
 func (o *Object) getKey() string {
+	fmt.Println(o)
 	key := o.Key
 	if _, ok := self.held[key]; ok {
 		self.held[key].lock.Lock()
