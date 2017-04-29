@@ -126,8 +126,10 @@ func (p *Participant) GetKey(ga *GetArgs, reply *string) error {
 		self.Transactions[ga.Tid] = NewTransaction(ga.Tid)
 
 		// set initial state of transaction
-		for k, _ := range self.Objects {
-			self.Transactions[ga.Tid].addObject(k, *self.Objects[k])
+		for k, v := range self.Objects {
+			if !v.running {
+				self.Transactions[ga.Tid].addObject(k, *self.Objects[k])
+			}
 		}
 	}
 	if v, ok := self.Objects[ga.Key]; ok {
