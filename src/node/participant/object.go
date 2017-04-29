@@ -62,10 +62,18 @@ func (o *Object) setKey(key string, value string, trans int32) {
 }
 
 func (o *Object) getKey() string {
-	o.lock.RLock()
-	res := o.Value
-	o.lock.RUnlock()
-	return res
+	key := o.Key
+	if _, ok := self.held[key]; ok {
+		self.held[key].lock.Lock()
+		for self.held[key].holding {
+			self.held[key].cond.Wait()
+		}
+		self.held[key].lock.Unlock()
+		o.lock.RLock()
+		res := o.Value
+		o.lock.RUnlock()
+		return res
+	}
 }
 
 func NewObject(key string, value string, trans int32) *Object {
