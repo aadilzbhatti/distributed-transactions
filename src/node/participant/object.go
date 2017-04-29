@@ -51,10 +51,10 @@ func (o *Object) setKey(key string, value string, trans int32) {
 		for self.held[key].holding {
 			self.held[key].cond.Wait()
 		}
+	  fmt.Printf("In setKey: %v is value\n", value)
+	  o.Value = value
+	  self.held[key].lock.Unlock()
 	}
-	fmt.Printf("In setKey: %v is value\n", value)
-	o.Value = value
-	self.held[key].lock.Unlock()
 	// o.running = true
 	// o.currTrans = trans
 	// o.lock.Unlock()
@@ -74,8 +74,8 @@ func NewObject(key string, value string, trans int32) *Object {
 		for self.held[key].holding {
 			self.held[key].cond.Wait()
 		}
+	  self.held[key].lock.Unlock()
 	}
-	self.held[key].lock.Unlock()
 	m := &sync.RWMutex{}
 	c := sync.NewCond(m)
 	return &Object{key, value, m, c, true, trans}
