@@ -173,6 +173,11 @@ func (p *Participant) GetKey(ga *GetArgs, reply *string) error {
 			*reply = self.Transactions[ga.Tid].initial[ga.Key].Value
 			log.Println("Ah!", *reply)
 			return nil
+		} else if _, ok2 := self.Transactions[ga.Tid].updates[ga.Key]; !ok2 {
+			log.Println(v)
+			*reply = self.Transactions[ga.Tid].initial[ga.Key].Value
+			log.Println("Achoo!", *reply)
+			return nil
 		}
 		*reply = self.Transactions[ga.Tid].updates[ga.Key].getKey()
 		log.Println("o", *reply)
