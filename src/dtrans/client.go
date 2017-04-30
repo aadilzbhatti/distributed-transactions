@@ -7,7 +7,6 @@ import (
 )
 
 var chost string = "sp17-cs425-g26-01.cs.illinois.edu:3000"
-var host string = "sp17-cs425-g26-0%d.cs.illinois.edu:3000"
 
 func Begin() (error, int32) {
 	client, err := rpc.Dial("tcp", chost)

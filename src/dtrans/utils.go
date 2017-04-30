@@ -6,6 +6,8 @@ import (
   "strings"
 )
 
+var host string = "sp17-cs425-g26-0%d.cs.illinois.edu:3000"
+
 func getHostName() string {
 	out, err := exec.Command("hostname").Output()
 	if err != nil {
@@ -17,7 +19,7 @@ func getHostName() string {
 
 func getNodeId() string {
   hname := getHostName()
-  for i := 2; i < 10; i++ {
+  for i := 1; i < 10; i++ {
 		name := fmt.Sprintf(host, i)
 		if name == hname {
 			// return string(rune('A' + (i - 2)))
