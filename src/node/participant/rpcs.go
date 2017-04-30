@@ -90,8 +90,8 @@ func (p *Participant) DoCommit(dca *DoCommitArgs, reply *bool) error {
 }
 
 func (p *Participant) DoAbort(daa *DoAbortArgs, reply *bool) error {
-	mutex.Lock()
-	defer mutex.Unlock()
+	// mutex.Lock()
+	// defer mutex.Unlock()
 
 	if trans, ok := self.Transactions[daa.Tid]; ok {
 		for k := range self.Objects {
