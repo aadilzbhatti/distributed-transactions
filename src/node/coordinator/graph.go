@@ -50,6 +50,7 @@ func (g *Graph) AddEdge(u string, v string, trans int32) error {
 			e := edge{v1, v2, trans}
 			g.edges[trans] = e
       g.nodes[u].neighbors[v] = v2
+			g.nodes[v].neighbors[u] = v1
 			fmt.Println(g)
 			return nil
 		} else {
@@ -66,6 +67,7 @@ func (g *Graph) RemoveEdge(trans int32) error {
 	if e, ok := g.edges[trans]; ok {
 		delete(g.edges, trans)
 		delete(g.nodes[e.start.id].neighbors, e.end.id)
+		delete(g.nodes[e.end.id].neighbors, e.start.id)
 	} else {
 		return fmt.Errorf("Edge %v not in graph\n", trans)
 	}
@@ -88,7 +90,7 @@ func (g *Graph) DetectCycle(trans int32) bool {
 	other := g.CopyGraph()
 	other.RemoveEdge(trans)
 	edge := g.edges[trans]
-	return other.cycleHelper(edge.start, edge.end) || other.cycleHelper(edge.end, edge.start)
+	return other.cycleHelper(edge.start, edge.end)
 }
 
 func (g Graph) cycleHelper(start vertex, end vertex) bool {
@@ -102,7 +104,7 @@ func (g Graph) cycleHelper(start vertex, end vertex) bool {
 			fmt.Println("FOUND SOMETHING")
 			return true
 		}
-		if g.cycleHelper(v, end) || g.cycleHelper(end, v) {
+		if g.cycleHelper(v, end) {
 			fmt.Println("FOUND SOMETHING")
 			return true
 		}
