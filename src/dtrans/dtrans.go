@@ -35,7 +35,7 @@ func Start() {
 			res := r.FindStringSubmatch(text)
 			for i := range res {
 				if i > 0 && res[i] != "" {
-					runCommand(res, i)
+					go runCommand(res, i)
 					break
 				}
 			}
