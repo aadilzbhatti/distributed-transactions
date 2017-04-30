@@ -81,6 +81,7 @@ func (p *Participant) DoCommit(dca *DoCommitArgs, reply *bool) error {
 			self.held[k].currId = 0
 			self.held[k].cond.Broadcast()
 		}
+		fmt.Println("THis is the held", self.held)
 		value.commit()
 		*reply = true
 		return nil
