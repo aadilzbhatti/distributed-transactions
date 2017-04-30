@@ -32,12 +32,14 @@ func (g *Graph) CopyGraph() *Graph {
 }
 
 func (g *Graph) AddVertex(id string) {
-  fmt.Println("Adding vertex", id)
-	v := vertex{id, make(map[string]vertex, 0)}
-	glock.Lock()
-	g.nodes[id] = v
-	glock.Unlock()
-	fmt.Println(g)
+	if !g.IsVertexInGraph(id) {
+	  fmt.Println("Adding vertex", id)
+		v := vertex{id, make(map[string]vertex, 0)}
+		glock.Lock()
+			g.nodes[id] = v
+		glock.Unlock()
+		fmt.Println(g)
+	} 
 }
 
 func (g *Graph) AddEdge(u string, v string, trans int32) error {

@@ -65,6 +65,7 @@ func (c Coordinator) Set(sa *SetArgs, reply *bool) error {
 		}
 
 		// add new edge to Graph
+		graph.AddVertex(sa.MyId)
 		graph.AddEdge(sa.MyId, sa.ServerId, sa.Tid)
 
 		// if cycle in Graph caused by this transaction
@@ -114,6 +115,7 @@ func (c Coordinator) Get(ga *GetArgs, reply *string) error {
 		}
 
 		// add new edge to Graph
+		graph.AddVertex(ga.MyId)
 		graph.AddEdge(ga.MyId, ga.ServerId, ga.Tid)
 
 		// if cycle in Graph caused by this transaction
