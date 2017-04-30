@@ -73,7 +73,7 @@ func (p *Participant) DoCommit(dca *DoCommitArgs, reply *bool) error {
 
 	if value, ok := self.Transactions[dca.Tid]; ok {
 		for k, v := range self.Transactions[dca.Tid].updates {
-			self.Objects[k] = &v
+			self.Objects[k].copyObject(v)
 		}
 		for k, _ := range self.Objects {
 			self.Objects[k].stop()

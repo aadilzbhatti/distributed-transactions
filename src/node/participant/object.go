@@ -14,6 +14,19 @@ type Object struct {
 	currTrans int32
 }
 
+func NewObject(key string, value string, trans int32) *Object {
+  if _, ok := self.held[key]; ok {
+    self.held[key].lock.Lock()
+		for self.held[key].holding && self.held[key].currId != trans {
+			self.held[key].cond.Wait()
+		}
+	  self.held[key].lock.Unlock()
+	}
+	m := &sync.RWMutex{}
+	c := sync.NewCond(m)
+	return &Object{key, value, m, c, true, trans}
+}
+
 func (o *Object) start() {
 	o.lock.Lock()
 	// o.running = true
@@ -81,15 +94,7 @@ func (o *Object) getKey(trans int32) string {
 	return o.Value
 }
 
-func NewObject(key string, value string, trans int32) *Object {
-  if _, ok := self.held[key]; ok {
-    self.held[key].lock.Lock()
-		for self.held[key].holding && self.held[key].currId != trans {
-			self.held[key].cond.Wait()
-		}
-	  self.held[key].lock.Unlock()
-	}
-	m := &sync.RWMutex{}
-	c := sync.NewCond(m)
-	return &Object{key, value, m, c, true, trans}
+func (o *Object) copyObject(other Object) {
+	o.Key = other.Key
+	o.Value = other.Value
 }
