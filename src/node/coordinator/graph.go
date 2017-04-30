@@ -54,9 +54,11 @@ func (g *Graph) AddEdge(u string, v string, trans int32) error {
 			fmt.Println(g)
 			return nil
 		} else {
+			fmt.Println("YOU FUCKED UP BOY", v)
 			return fmt.Errorf("Vertex %v not in graph\n", v)
 		}
 	}
+	fmt.Println("YOU FUCKED UP BOY", u)
 	return fmt.Errorf("Vertex %v not in graph\n", u)
 }
 
