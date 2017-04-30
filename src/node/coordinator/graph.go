@@ -32,6 +32,7 @@ func (g *Graph) CopyGraph() *Graph {
 }
 
 func (g *Graph) AddVertex(id string) {
+  fmt.Println("Adding vertex", id)
 	v := vertex{id, make(map[string]vertex, 0)}
 	glock.Lock()
 	g.nodes[id] = v
@@ -39,6 +40,7 @@ func (g *Graph) AddVertex(id string) {
 }
 
 func (g *Graph) AddEdge(u string, v string, trans int32) error {
+  fmt.Println("Adding edge")
 	glock.Lock()
 	defer glock.Unlock()
 
@@ -77,6 +79,7 @@ func (g *Graph) IsVertexInGraph(name string) bool {
 }
 
 func (g *Graph) DetectCycle(trans int32) bool {
+  fmt.Println("Detecting cycle")
 	glock.RLock()
 	defer glock.RUnlock()
 
@@ -91,6 +94,7 @@ func (g Graph) cycleHelper(start vertex, end vertex) bool {
 		return false
 	}
 	for _, v := range start.neighbors {
+    fmt.Println(v)
 		if end.id == v.id {
 			return true
 		}
