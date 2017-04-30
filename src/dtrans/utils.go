@@ -5,6 +5,7 @@ import (
   "os"
   "fmt"
   "strings"
+  "strconv"
 )
 
 var host string = "sp17-cs425-g26-0%d.cs.illinois.edu"
@@ -22,9 +23,8 @@ func getNodeId() string {
   hname := getHostName()
   for i := 1; i < 10; i++ {
 		name := fmt.Sprintf(host, i)
-    fmt.Println(name, hname, string(i))
 		if name == hname {
-      return string(i)
+      return strconv.Itoa(i)
 		}
 	}
   os.Exit(1)
