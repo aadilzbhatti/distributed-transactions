@@ -20,7 +20,8 @@ func getNodeId() string {
   for i := 2; i < 10; i++ {
 		name := fmt.Sprintf(host, i)
 		if name == hname {
-			return string(rune('A' + (i - 2)))
+			// return string(rune('A' + (i - 2)))
+      return string(i)
 		}
 	}
   return ""
