@@ -73,7 +73,7 @@ func (p *Participant) DoCommit(dca *DoCommitArgs, reply *bool) error {
 
 	if value, ok := self.Transactions[dca.Tid]; ok {
 		for k, v := range self.Transactions[dca.Tid].updates {
-			self.Objects[k] = v
+			self.Objects[k] = &v
 		}
 		for k, _ := range self.Objects {
 			self.Objects[k].stop()
@@ -131,14 +131,14 @@ func (p *Participant) SetKey(sa *SetArgs, reply *bool) error {
 		self.held[sa.Key] = NewHeld(sa.Key, sa.Tid)
 
 	} else if obj, ok := self.Objects[sa.Key]; ok {
-		self.Transactions[sa.Tid].updates[sa.Key] = obj
+		self.Transactions[sa.Tid].updates[sa.Key] = *obj
 		self.Transactions[sa.Tid].updateObject(sa.Key, sa.Value)
 		self.held[sa.Key] = NewHeld(sa.Key, sa.Tid)
 		log.Println("Updating a held object")
 
 	} else {
 		obj := NewObject(sa.Key, sa.Value, sa.Tid)
-		self.Transactions[sa.Tid].updates[sa.Key] = obj
+		self.Transactions[sa.Tid].updates[sa.Key] = *obj
 		self.held[sa.Key] = NewHeld(sa.Key, sa.Tid)
 	}
 
@@ -179,7 +179,9 @@ func (p *Participant) GetKey(ga *GetArgs, reply *string) error {
 			log.Println("Achoo!", *reply)
 			return nil
 		}
-		*reply = self.Transactions[ga.Tid].updates[ga.Key].getKey(ga.Tid)
+		// *reply = self.Transactions[ga.Tid].updates[ga.Key].getKey(ga.Tid)
+		o := self.Transactions[ga.Tid].updates[ga.Key]
+		*reply = (&o).getKey(ga.Tid)
 		log.Println("o", *reply)
 
 	} else if v, ok := self.Objects[ga.Key]; ok {
@@ -194,7 +196,9 @@ func (p *Participant) GetKey(ga *GetArgs, reply *string) error {
 			log.Println("Achoo2!", *reply)
 			return nil
 		}
-		*reply = self.Transactions[ga.Tid].updates[ga.Key].getKey(ga.Tid)
+		// *reply = self.Transactions[ga.Tid].updates[ga.Key].getKey(ga.Tid)
+		o := self.Transactions[ga.Tid].updates[ga.Key]
+		*reply = (&o).getKey(ga.Tid)
 		log.Println("o", *reply)
 	} else {
 		*reply = "NOT FOUND"
