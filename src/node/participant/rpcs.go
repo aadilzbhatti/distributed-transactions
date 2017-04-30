@@ -41,9 +41,6 @@ func (p *Participant) Join(ja *JoinArgs, reply *Participant) error {
 }
 
 func (p *Participant) Begin(ba *BeginArgs, reply *bool) error {
-	mutex.Lock()
-	defer mutex.Unlock()
-
 	for k := range self.Objects {
 		self.Objects[k].start()
 	}
@@ -54,9 +51,6 @@ func (p *Participant) Begin(ba *BeginArgs, reply *bool) error {
 }
 
 func (p *Participant) CanCommit(cca *CanCommitArgs, reply *bool) error {
-	// mutex.Lock()
-	// defer mutex.Unlock()
-
 	log.Println(self.Transactions, cca.Tid)
 	if value, ok := self.Transactions[cca.Tid]; ok {
 		log.Println("In here!")
@@ -68,9 +62,6 @@ func (p *Participant) CanCommit(cca *CanCommitArgs, reply *bool) error {
 }
 
 func (p *Participant) DoCommit(dca *DoCommitArgs, reply *bool) error {
-	// mutex.Lock()
-	// defer mutex.Unlock()
-
 	if value, ok := self.Transactions[dca.Tid]; ok {
 		for k, v := range self.Transactions[dca.Tid].updates {
 			if _, ok := self.Objects[k]; ok {
@@ -94,9 +85,6 @@ func (p *Participant) DoCommit(dca *DoCommitArgs, reply *bool) error {
 }
 
 func (p *Participant) DoAbort(daa *DoAbortArgs, reply *bool) error {
-	// mutex.Lock()
-	// defer mutex.Unlock()
-
 	if trans, ok := self.Transactions[daa.Tid]; ok {
 		for k := range self.Objects {
 			self.Objects[k].stop()

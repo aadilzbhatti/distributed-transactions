@@ -12,6 +12,7 @@ type BeginArgs struct{}
 
 type SetArgs struct {
 	Tid      int32
+  MyId string
 	ServerId string
 	Key      string
 	Value    string
@@ -19,6 +20,7 @@ type SetArgs struct {
 
 type GetArgs struct {
 	Tid      int32
+	MyId string
 	ServerId string
 	Key      string
 }
@@ -62,16 +64,42 @@ func (c Coordinator) Set(sa *SetArgs, reply *bool) error {
 			return err
 		}
 
+		// add new edge to Graph
+		graph.AddEdge(sa.MyId, sa.ServerId, sa.Tid)
+
+		// if cycle in Graph caused by this transaction
+		if graph.DetectCycle(sa.Tid) {
+			graph.RemoveEdge(sa.Tid)
+
+			// abort this Transaction
+			aa := AbortArgs{sa.Tid}
+			c2, e2 := rpc.Dial("tcp", fmt.Sprintf("%s:%d", p.Address, 3000))
+			defer c2.Close()
+			if e2 != nil {
+				log.Println("When aborting:", e2)
+			}
+			var r bool
+			e2 = c2.Call("Participant.DoAbort", &aa, &r)
+			if e2 != nil {
+				log.Println("When trying to abort:", e2)
+			}
+			return fmt.Errorf("Transaction caused deadlock, aborted\n")
+		}
+
+		// otherwise continue
 		psa := participant.SetArgs{sa.Tid, sa.Key, sa.Value}
 		err = client.Call("Participant.SetKey", &psa, &reply)
 		if err != nil {
 			log.Println("Error in Set/RPC: ", err)
 			return err
 		}
+
+		// remove created edge
+		graph.RemoveEdge(sa.Tid)
 		return nil
 
 	} else {
-		return fmt.Errorf("No such server in system")
+		return fmt.Errorf("No such server in system\n")
 	}
 }
 
@@ -85,15 +113,41 @@ func (c Coordinator) Get(ga *GetArgs, reply *string) error {
 			return err
 		}
 
+		// add new edge to Graph
+		graph.AddEdge(ga.MyId, ga.ServerId, ga.Tid)
+
+		// if cycle in Graph caused by this transaction
+		if graph.DetectCycle(ga.Tid) {
+			graph.RemoveEdge(ga.Tid)
+
+			// abort this Transaction
+			aa := AbortArgs{ga.Tid}
+			c2, e2 := rpc.Dial("tcp", fmt.Sprintf("%s:%d", p.Address, 3000))
+			defer c2.Close()
+			if e2 != nil {
+				log.Println("When aborting:", e2)
+			}
+			var r bool
+			e2 = c2.Call("Participant.DoAbort", &aa, &r)
+			if e2 != nil {
+				log.Println("When trying to abort:", e2)
+			}
+			return fmt.Errorf("Transaction caused deadlock, aborted\n")
+		}
+
+		// abort transaction
 		pga := participant.GetArgs{ga.Tid, ga.Key}
 		err = client.Call("Participant.GetKey", &pga, &reply)
 		if err != nil {
 			return err
 		}
+
+		// remove created edge
+		graph.RemoveEdge(ga.Tid)
 		return nil
 
 	} else {
-		return fmt.Errorf("No such server in system")
+		return fmt.Errorf("No such server in system\n")
 	}
 }
 

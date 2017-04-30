@@ -29,8 +29,9 @@ func Set(serverId string, key string, value string, currId int32) error {
 		return err
 	}
 
+	myId := getNodeId()
 	log.Printf("Calling on server %v\n", serverId)
-	sa := coordinator.SetArgs{currId, serverId, key, value}
+	sa := coordinator.SetArgs{currId, myId, serverId, key, value}
 	var reply bool
 	err = client.Call("Coordinator.Set", &sa, &reply)
 	if err != nil {
@@ -48,7 +49,8 @@ func Get(serverId string, key string, currId int32) string {
 		return ""
 	}
 
-	ga := coordinator.GetArgs{currId, serverId, key}
+	myId := getNodeId()
+	ga := coordinator.GetArgs{currId, myId, serverId, key}
 	var reply string
 	err = client.Call("Coordinator.Get", &ga, &reply)
 	if err != nil {

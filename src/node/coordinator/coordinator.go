@@ -12,6 +12,7 @@ import (
 var host string = "sp17-cs425-g26-0%d.cs.illinois.edu"
 var mutex = &sync.Mutex{}
 var self Coordinator
+var graph *Graph
 
 type Coordinator struct {
 	Participants map[string]participant.Participant
@@ -31,6 +32,9 @@ func Start() error {
 	for i := 2; i < 10; i++ {
 		go self.joinParticipant(i)
 	}
+
+  // set up deadlock detection graph
+	graph = NewGraph()
 
 	// interface with client
 	return nil
@@ -58,7 +62,7 @@ func (c Coordinator) joinParticipant(id int) {
   serverId := string(rune('A' + (id - 2)))
 	log.Printf("Trying to join node %v\n", serverId)
 	hostname := fmt.Sprintf("%s:%d", fmt.Sprintf(host, id), 3000)
-  
+
 	for {
 		client, err := rpc.Dial("tcp", hostname)
 		if err != nil {
@@ -78,6 +82,8 @@ func (c Coordinator) joinParticipant(id int) {
 				mutex.Unlock()
 				log.Printf("Server %v joined the system\n", serverId)
 			}
+
+      graph.AddVertex(serverId)
 			client.Close()
 			return
 		}
