@@ -37,6 +37,7 @@ func (g *Graph) AddVertex(id string) {
 	glock.Lock()
 	g.nodes[id] = v
 	glock.Unlock()
+	fmt.Println(g)
 }
 
 func (g *Graph) AddEdge(u string, v string, trans int32) error {
@@ -49,6 +50,7 @@ func (g *Graph) AddEdge(u string, v string, trans int32) error {
 			e := edge{v1, v2, trans}
 			g.edges[trans] = e
       g.nodes[u].neighbors[v] = v2
+			fmt.Println(g)
 			return nil
 		} else {
 			return fmt.Errorf("Vertex %v not in graph\n", v)
@@ -91,16 +93,20 @@ func (g *Graph) DetectCycle(trans int32) bool {
 
 func (g Graph) cycleHelper(start vertex, end vertex) bool {
 	if end.id == start.id {
+		fmt.Println("FOUND SOMETHING")
 		return false
 	}
 	for _, v := range start.neighbors {
     fmt.Println(v)
 		if end.id == v.id {
+			fmt.Println("FOUND SOMETHING")
 			return true
 		}
 		if g.cycleHelper(v, end) || g.cycleHelper(end, v) {
+			fmt.Println("FOUND SOMETHING")
 			return true
 		}
 	}
+	fmt.Println("FOUND SOMETHING")
 	return false
 }
