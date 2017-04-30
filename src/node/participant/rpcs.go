@@ -68,8 +68,8 @@ func (p *Participant) CanCommit(cca *CanCommitArgs, reply *bool) error {
 }
 
 func (p *Participant) DoCommit(dca *DoCommitArgs, reply *bool) error {
-	mutex.Lock()
-	defer mutex.Unlock()
+	// mutex.Lock()
+	// defer mutex.Unlock()
 
 	if value, ok := self.Transactions[dca.Tid]; ok {
 		for k, v := range self.Transactions[dca.Tid].updates {
