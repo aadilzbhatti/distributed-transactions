@@ -98,9 +98,11 @@ func (c Coordinator) Get(ga *GetArgs, reply *string) error {
 }
 
 func (c Coordinator) Commit(ca *CommitArgs, reply *bool) error {
+  fmt.Println("COMMIT TIME!!")
 	// check if we can commit
 	cca := participant.CanCommitArgs{ca.Tid}
 	for _, p := range self.Participants {
+    fmt.Println("CHECKING WITH", p)
 		client, err := rpc.Dial("tcp", fmt.Sprintf("%s:%d", p.Address, 3000))
 		if err != nil {
 			log.Println("Error in Commit/Dial:", err)
@@ -132,6 +134,7 @@ func (c Coordinator) Commit(ca *CommitArgs, reply *bool) error {
 	// if we can, we commit
 	dca := participant.DoCommitArgs{ca.Tid}
 	for _, p := range self.Participants {
+    fmt.Println("COMMITTING TO", p)
 		client, err := rpc.Dial("tcp", fmt.Sprintf("%s:%d", p.Address, 3000))
 		if err != nil {
 			log.Println("Error in DoCommit/Dial:", err)

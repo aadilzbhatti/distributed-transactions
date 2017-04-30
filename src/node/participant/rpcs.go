@@ -130,11 +130,16 @@ func (p *Participant) SetKey(sa *SetArgs, reply *bool) error {
 		log.Printf("Reseting %v to %v=%v\n", sa.Key, sa.Key, self.Objects[sa.Key])
 		self.held[sa.Key] = NewHeld(sa.Key, sa.Tid)
 
+	} else if obj, ok := self.Objects[sa.Key]; ok {
+		self.Transactions[sa.Tid].updates[sa.Key] = obj
+		self.Transactions[sa.Tid].updateObject(sa.Key, sa.Value)
+		self.held[sa.Key] = NewHeld(sa.Key, sa.Tid)
+		log.Println("Updating a held object")
+
 	} else {
 		obj := NewObject(sa.Key, sa.Value, sa.Tid)
 		self.Transactions[sa.Tid].updates[sa.Key] = obj
-		h := NewHeld(sa.Key, sa.Tid)
-		self.held[sa.Key] = h
+		self.held[sa.Key] = NewHeld(sa.Key, sa.Tid)
 	}
 
 	*reply = true

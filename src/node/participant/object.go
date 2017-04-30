@@ -41,28 +41,27 @@ func (o *Object) resetKey(value string, trans int32) {
 }
 
 func (o *Object) setKey(key string, value string, trans int32) {
-	// o.lock.Lock()
-	// for o.running && trans != o.currTrans {
-	// 	o.cond.Wait()
-	// }
-
 	if _, ok := self.held[key]; ok {
 	  self.held[key].lock.Lock()
 		for self.held[key].holding && self.held[key].currId != trans && self.held[key].currId != 0 {
+			fmt.Println("O BOY")
 			self.held[key].cond.Wait()
 		}
 	  fmt.Printf("In setKey: %v is value\n", value)
 	  o.Value = value
+		o.currTrans = trans
 	  self.held[key].lock.Unlock()
+	} else {
+	  fmt.Printf("In setKey 2: %v is value\n", value)
+		o.Value = value
+		o.currTrans = trans
 	}
-	// o.running = true
-	// o.currTrans = trans
-	// o.lock.Unlock()
+
 	fmt.Println(o)
 }
 
 func (o *Object) getKey(trans int32) string {
-	fmt.Println(o)
+	fmt.Println(o, trans)
 	key := o.Key
 	if _, ok := self.held[key]; ok {
 		fmt.Println("BADABING", self.held[key])
@@ -71,6 +70,7 @@ func (o *Object) getKey(trans int32) string {
 			fmt.Println("BROKEN!")
 			self.held[key].cond.Wait()
 		}
+		fmt.Println("HERE WE GO!")
 		self.held[key].lock.Unlock()
 		o.lock.RLock()
 		res := o.Value
