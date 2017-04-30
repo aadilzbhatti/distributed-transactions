@@ -7,7 +7,7 @@ import (
   "strings"
 )
 
-var host string = "sp17-cs425-g26-0%d.cs.illinois.edu:3000"
+var host string = "sp17-cs425-g26-0%d.cs.illinois.edu"
 
 func getHostName() string {
 	out, err := exec.Command("hostname").Output()
