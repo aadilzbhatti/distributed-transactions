@@ -59,7 +59,6 @@ func (g *Graph) AddEdge(u string, v string, trans int32) error {
 			fmt.Println("SET NEIGHBOR of u to v")
 			g.nodes[v].neighbors[u] = v1
 			fmt.Println("SET NEIGHBOR OF v to u")
-			// fmt.Println(g)
 			return nil
 		} else {
 			fmt.Println("YOU FUCKED UP BOY", v)
@@ -104,6 +103,7 @@ func (g *Graph) DetectCycle(trans int32) bool {
 }
 
 func (g Graph) cycleHelper(start vertex, end vertex) bool {
+	fmt.Println(start, end)
 	if end.id == start.id {
 		fmt.Println("FOUND SOMETHING 1")
 		return false
