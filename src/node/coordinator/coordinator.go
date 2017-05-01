@@ -7,6 +7,7 @@ import (
 	"net/rpc"
 	"node/participant"
 	"sync"
+  "strconv"
 )
 
 var host string = "sp17-cs425-g26-0%d.cs.illinois.edu"
@@ -83,7 +84,8 @@ func (c Coordinator) joinParticipant(id int) {
 				log.Printf("Server %v joined the system\n", serverId)
 			}
 
-      graph.AddVertex(serverId)
+      // graph.AddVertex(serverId)
+      graph.AddVertex(strconv.Itoa(id))
       fmt.Println("It was called here!")
 			client.Close()
 			return

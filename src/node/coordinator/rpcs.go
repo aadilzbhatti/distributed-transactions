@@ -55,6 +55,7 @@ func (c Coordinator) Begin(ba *BeginArgs, reply *int32) error {
 }
 
 func (c Coordinator) Set(sa *SetArgs, reply *bool) error {
+	otherId := string([]rune(sa.ServerId)[0] - 65)
 	if p, ok := self.Participants[sa.ServerId]; ok {
 		client, err := rpc.Dial("tcp", fmt.Sprintf("%s:%d", p.Address, 3000))
 		defer client.Close()
@@ -67,7 +68,7 @@ func (c Coordinator) Set(sa *SetArgs, reply *bool) error {
 		// add new edge to Graph
 		graph.AddVertex(sa.MyId)
 		fmt.Println("It was called herEEE!")
-		graph.AddEdge(sa.MyId, sa.ServerId, sa.Tid)
+		graph.AddEdge(sa.MyId, otherId, sa.Tid)
 		fmt.Println("fuck me")
 
 		// if cycle in Graph caused by this transaction
@@ -99,6 +100,7 @@ func (c Coordinator) Set(sa *SetArgs, reply *bool) error {
 }
 
 func (c Coordinator) Get(ga *GetArgs, reply *string) error {
+	otherId := string([]rune(ga.ServerId)[0] - 65)
 	if p, ok := self.Participants[ga.ServerId]; ok {
 		client, err := rpc.Dial("tcp", fmt.Sprintf("%s:%d", p.Address, 3000))
 		defer client.Close()
@@ -110,7 +112,7 @@ func (c Coordinator) Get(ga *GetArgs, reply *string) error {
 
 		// add new edge to Graph
 		graph.AddVertex(ga.MyId)
-		graph.AddEdge(ga.MyId, ga.ServerId, ga.Tid)
+		graph.AddEdge(ga.MyId, otherId, ga.Tid)
 
 		// if cycle in Graph caused by this transaction
 		if graph.DetectCycle(ga.Tid) {
