@@ -59,7 +59,7 @@ func (g *Graph) AddEdge(u string, v string, trans int32) error {
 			fmt.Println("SET NEIGHBOR of u to v")
 			g.nodes[v].neighbors[u] = v1
 			fmt.Println("SET NEIGHBOR OF v to u")
-			fmt.Println(g)
+			// fmt.Println(g)
 			return nil
 		} else {
 			fmt.Println("YOU FUCKED UP BOY", v)
