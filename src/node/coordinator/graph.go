@@ -106,6 +106,7 @@ func (g *Graph) DetectCycle(trans int32) bool {
 	other.RemoveEdge(trans)
 	fmt.Println(other)
 	fmt.Println(other.edges)
+	fmt.Println(edge.start, edge.end)
 	return other.cycleHelper(edge.start, edge.end)
 }
 
