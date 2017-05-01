@@ -94,8 +94,8 @@ func (g *Graph) IsVertexInGraph(name string) bool {
 
 func (g *Graph) DetectCycle(trans int32) bool {
   fmt.Println("Detecting cycle")
-	glock.RLock()
-	defer glock.RUnlock()
+	// glock.RLock()
+	// defer glock.RUnlock()
 
 	other := g.CopyGraph()
 	other.RemoveEdge(trans)
