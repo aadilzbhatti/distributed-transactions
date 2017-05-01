@@ -125,17 +125,9 @@ func (c Coordinator) Get(ga *GetArgs, reply *string) error {
 			graph.RemoveEdge(ga.Tid)
 
 			// abort this Transaction
-			aa := participant.DoAbortArgs{ga.Tid}
-			c2, e2 := rpc.Dial("tcp", fmt.Sprintf("%s:%d", p.Address, 3000))
-			defer c2.Close()
-			if e2 != nil && e2.Error() != "No such transaction in server" {
-				log.Println("When aborting:", e2)
-			}
+			aa := AbortArgs{ga.Tid}
 			var r bool
-			e2 = c2.Call("Participant.DoAbort", &aa, &r)
-			if e2 != nil {
-				log.Println("When trying to abort:", e2)
-			}
+			c.Abort(&aa, &r)
 			return fmt.Errorf("Transaction caused deadlock, aborted\n")
 		}
 
