@@ -111,6 +111,9 @@ func (g *Graph) DetectCycle(trans int32) bool {
 }
 
 func (g *Graph) cycleHelper(start *vertex, end *vertex) bool {
+	if start.id == end.id {
+		return false
+	}
 	seen := make(map[string]bool)
 	stack := make([]vertex, 0)
 
