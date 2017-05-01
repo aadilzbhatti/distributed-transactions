@@ -70,23 +70,23 @@ func (c Coordinator) Set(sa *SetArgs, reply *bool) error {
 		fmt.Println("fuck me")
 
 		// if cycle in Graph caused by this transaction
-		// if graph.DetectCycle(sa.Tid) {
-		// 	graph.RemoveEdge(sa.Tid)
-		//
-		// 	// abort this Transaction
-		// 	aa := AbortArgs{sa.Tid}
-		// 	c2, e2 := rpc.Dial("tcp", fmt.Sprintf("%s:%d", p.Address, 3000))
-		// 	defer c2.Close()
-		// 	if e2 != nil {
-		// 		log.Println("When aborting:", e2)
-		// 	}
-		// 	var r bool
-		// 	e2 = c2.Call("Participant.DoAbort", &aa, &r)
-		// 	if e2 != nil {
-		// 		log.Println("When trying to abort:", e2)
-		// 	}
-		// 	return fmt.Errorf("Transaction caused deadlock, aborted\n")
-		// }
+		if graph.DetectCycle(sa.Tid) {
+			graph.RemoveEdge(sa.Tid)
+
+			// abort this Transaction
+			aa := AbortArgs{sa.Tid}
+			c2, e2 := rpc.Dial("tcp", fmt.Sprintf("%s:%d", p.Address, 3000))
+			defer c2.Close()
+			if e2 != nil {
+				log.Println("When aborting:", e2)
+			}
+			var r bool
+			e2 = c2.Call("Participant.DoAbort", &aa, &r)
+			if e2 != nil {
+				log.Println("When trying to abort:", e2)
+			}
+			return fmt.Errorf("Transaction caused deadlock, aborted\n")
+		}
 
 		// otherwise continue
 		psa := participant.SetArgs{sa.Tid, sa.Key, sa.Value}
