@@ -102,9 +102,9 @@ func (g *Graph) DetectCycle(trans int32) bool {
 
 	other := g.CopyGraph()
 	fmt.Println("Old news baby", g.edges[trans], other.edges[trans])
+	edge := other.edges[trans]
 	other.RemoveEdge(trans)
 	fmt.Println(other)
-	edge := g.edges[trans]
 	fmt.Println(other.edges)
 	return other.cycleHelper(edge.start, edge.end)
 }
