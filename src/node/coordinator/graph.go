@@ -104,7 +104,6 @@ func (g *Graph) DetectCycle(trans int32) bool {
 }
 
 func (g Graph) cycleHelper(start vertex, end vertex) bool {
-	fmt.Println(g)
 	if end.id == start.id {
 		fmt.Println("FOUND SOMETHING")
 		return false
