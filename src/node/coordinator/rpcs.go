@@ -74,8 +74,8 @@ func (c Coordinator) Set(sa *SetArgs, reply *bool) error {
 		fmt.Println("fuck me")
 
 		// if cycle in Graph caused by this transaction
-		if graph.DetectCycle(sa.Tid) {
-			graph.RemoveEdge(sa.Tid)
+		if graph.DetectCycle(sa.MyId, otherId) {
+			graph.RemoveEdge(sa.MyId, otherId)
 			fmt.Println("About to abort")
 
 			// abort this Transaction
@@ -117,8 +117,8 @@ func (c Coordinator) Get(ga *GetArgs, reply *string) error {
 		graph.AddEdge(ga.MyId, otherId, ga.Tid)
 
 		// if cycle in Graph caused by this transaction
-		if graph.DetectCycle(ga.Tid) {
-			graph.RemoveEdge(ga.Tid)
+		if graph.DetectCycle(ga.MyId, otherId) {
+			graph.RemoveEdge(ga.MyId, otherId)
 
 			// abort this Transaction
 			aa := AbortArgs{ga.Tid}
@@ -142,7 +142,7 @@ func (c Coordinator) Get(ga *GetArgs, reply *string) error {
 }
 
 func (c Coordinator) Commit(ca *CommitArgs, reply *bool) error {
-	defer graph.RemoveEdge(ca.Tid)
+	defer graph.RemoveTransaction(ca.Tid)
   fmt.Println("COMMIT TIME!!")
 
 	// check if we can commit
@@ -204,7 +204,7 @@ func (c Coordinator) Commit(ca *CommitArgs, reply *bool) error {
 }
 
 func (c Coordinator) Abort(aa *AbortArgs, reply *bool) error {
-	defer graph.RemoveEdge(aa.Tid)
+	defer graph.RemoveTransaction(aa.Tid)
 
 	paa := participant.DoAbortArgs{aa.Tid}
 	for _, p := range self.Participants {
