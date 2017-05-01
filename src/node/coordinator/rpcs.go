@@ -83,7 +83,7 @@ func (c Coordinator) Set(sa *SetArgs, reply *bool) error {
 			}
 			var r bool
 			e2 = c2.Call("Participant.DoAbort", &aa, &r)
-			if e2 != nil {
+			if e2 != nil && e2.Error() != "No such transaction in server" {
 				log.Println("When trying to abort:", e2)
 			}
 			return fmt.Errorf("Transaction caused deadlock, aborted\n")
@@ -127,7 +127,7 @@ func (c Coordinator) Get(ga *GetArgs, reply *string) error {
 			aa := participant.DoAbortArgs{ga.Tid}
 			c2, e2 := rpc.Dial("tcp", fmt.Sprintf("%s:%d", p.Address, 3000))
 			defer c2.Close()
-			if e2 != nil {
+			if e2 != nil && e2.Error() != "No such transaction in server" {
 				log.Println("When aborting:", e2)
 			}
 			var r bool
