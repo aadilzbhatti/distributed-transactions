@@ -39,6 +39,7 @@ func (g *Graph) CopyGraph() *Graph {
 }
 
 func (g *Graph) AddVertex(id string) {
+	fmt.Println("Called! with", id)
 	if !g.IsVertexInGraph(id) {
 	  fmt.Println("Adding vertex", id)
 		v := vertex{id, make(map[string]*vertex, 0)}
@@ -77,6 +78,7 @@ func (g *Graph) AddEdge(u string, v string, trans int32) error {
 }
 
 func (g *Graph) RemoveEdge(trans int32) error {
+	fmt.Println("Removing edge")
 	glock.Lock()
 	defer glock.Unlock()
 
@@ -88,6 +90,7 @@ func (g *Graph) RemoveEdge(trans int32) error {
 		return fmt.Errorf("Edge %v not in graph\n", trans)
 	}
 
+	fmt.Println("Edge removed")
 	return nil
 }
 
@@ -100,8 +103,8 @@ func (g *Graph) IsVertexInGraph(name string) bool {
 
 func (g *Graph) DetectCycle(trans int32) bool {
   fmt.Println("Detecting cycle")
-	glock.RLock()
-	defer glock.RUnlock()
+	// glock.RLock()
+	// defer glock.RUnlock()
 
 	other := g.CopyGraph()
 	other.RemoveEdge(trans)

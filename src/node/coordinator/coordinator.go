@@ -84,6 +84,7 @@ func (c Coordinator) joinParticipant(id int) {
 			}
 
       graph.AddVertex(serverId)
+      fmt.Println("It was called here!")
 			client.Close()
 			return
 		}

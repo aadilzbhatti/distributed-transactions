@@ -66,6 +66,7 @@ func (c Coordinator) Set(sa *SetArgs, reply *bool) error {
 
 		// add new edge to Graph
 		graph.AddVertex(sa.MyId)
+		fmt.Println("It was called herEEE!")
 		graph.AddEdge(sa.MyId, sa.ServerId, sa.Tid)
 		fmt.Println("fuck me")
 
