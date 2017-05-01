@@ -64,6 +64,7 @@ func runCommand(cmds []string, i int) {
 		err := Set(cmds[i+1], cmds[i+2], cmds[i+3], currentId)
 		if err != nil {
 			fmt.Println("Could not set: ", err)
+      currentId = 0
 			return
 		}
 		fmt.Printf("SETTING %v.%v = %v\n", cmds[i+1], cmds[i+2], cmds[i+3])
