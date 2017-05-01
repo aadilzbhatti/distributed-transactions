@@ -52,7 +52,7 @@ func (g *Graph) AddVertex(id string) {
 }
 
 func (g *Graph) AddEdge(u string, v string, trans int32) error {
-  fmt.Println("Adding edge")
+  fmt.Println("Adding edge", u, v)
 	glock.Lock()
 	defer glock.Unlock()
 
