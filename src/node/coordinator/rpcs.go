@@ -66,7 +66,7 @@ func (c Coordinator) Set(sa *SetArgs, reply *bool) error {
 
 		// add new edge to Graph
 		graph.AddVertex(sa.MyId)
-		// graph.AddEdge(sa.MyId, sa.ServerId, sa.Tid)
+		graph.AddEdge(sa.MyId, sa.ServerId, sa.Tid)
 		fmt.Println("fuck me")
 
 		// if cycle in Graph caused by this transaction

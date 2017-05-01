@@ -44,8 +44,8 @@ func (g *Graph) AddVertex(id string) {
 
 func (g *Graph) AddEdge(u string, v string, trans int32) error {
   fmt.Println("Adding edge")
-	glock.Lock()
-	defer glock.Unlock()
+	// glock.Lock()
+	// defer glock.Unlock()
 
 	if v1, ok := g.nodes[u]; ok {
 		if v2, ok2 := g.nodes[v]; ok2 {
