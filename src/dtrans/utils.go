@@ -23,7 +23,6 @@ func getNodeId() string {
 	hname := getHostName()
 	for i := 1; i < 10; i++ {
 		name := fmt.Sprintf(host, i)
-		fmt.Println(name, hname, strconv.Itoa(i))
 		if name == hname {
 			return strconv.Itoa(i)
 		}

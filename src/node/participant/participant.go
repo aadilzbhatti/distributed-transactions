@@ -42,7 +42,6 @@ func (p Participant) setupRPC() {
 	if e != nil {
 		log.Println("Error in setup RPC:", e)
 	}
-	log.Println("Setting up participant RPCs")
 	go rpc.Accept(l)
 }
 

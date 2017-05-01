@@ -41,10 +41,6 @@ func (p *Participant) Join(ja *JoinArgs, reply *Participant) error {
 }
 
 func (p *Participant) Begin(ba *BeginArgs, reply *bool) error {
-	for k := range self.Objects {
-		self.Objects[k].start()
-	}
-
 	*reply = true
 	log.Println("Initialized all objects for transaction")
 	return nil
@@ -53,11 +49,9 @@ func (p *Participant) Begin(ba *BeginArgs, reply *bool) error {
 func (p *Participant) CanCommit(cca *CanCommitArgs, reply *bool) error {
 	log.Println(self.Transactions, cca.Tid)
 	if value, ok := self.Transactions[cca.Tid]; ok {
-		log.Println("In here!")
 		*reply = !value.hasFailed()
 		return nil
 	}
-	log.Println("Should not get here..")
 	return fmt.Errorf("No such transaction in server")
 }
 
@@ -76,7 +70,6 @@ func (p *Participant) DoCommit(dca *DoCommitArgs, reply *bool) error {
 			self.held[k].currId = 0
 			self.held[k].cond.Broadcast()
 		}
-		fmt.Println("THis is the held", self.held)
 		value.commit()
 		*reply = true
 		return nil
@@ -93,7 +86,6 @@ func (p *Participant) DoAbort(daa *DoAbortArgs, reply *bool) error {
 			self.held[k].cond.Broadcast()
 		}
 		trans.abort()
-		log.Println("Aborting:", daa.Tid)
 		*reply = true
 		return nil
 	}
