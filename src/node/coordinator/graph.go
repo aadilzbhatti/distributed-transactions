@@ -65,7 +65,6 @@ func (g *Graph) AddEdge(u string, v string, trans int32) error {
 }
 
 func (g *Graph) RemoveEdge(u, v string) error {
-	fmt.Println("Removing edge")
 	glock.Lock()
 	defer glock.Unlock()
 
@@ -90,8 +89,6 @@ func (g *Graph) IsVertexInGraph(name string) bool {
 func (g *Graph) DetectCycle(u, v string) bool {
 	other := g.CopyGraph()
 	other.RemoveEdge(u, v)
-	fmt.Println(other)
-	fmt.Printf("%+v, %+v in dc\n", other.nodes[u], other.nodes[v])
 	return other.cycleHelper(other.nodes[u], other.nodes[v]) || other.cycleHelper(other.nodes[v], other.nodes[u])
 }
 
