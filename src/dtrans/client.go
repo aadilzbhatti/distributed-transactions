@@ -41,7 +41,7 @@ func Set(serverId string, key string, value string, currId int32) error {
 	return nil
 }
 
-func Get(serverId string, key string, currId int32) (string, err) {
+func Get(serverId string, key string, currId int32) (string, error) {
 	client, err := rpc.Dial("tcp", chost)
 	if err != nil {
 		log.Println("Error in Get/Dial:", err)
@@ -58,7 +58,7 @@ func Get(serverId string, key string, currId int32) (string, err) {
 		return "", err
 	}
 
-	return reply
+	return reply, nil
 }
 
 func Abort() error {
