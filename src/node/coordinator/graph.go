@@ -136,6 +136,7 @@ func (g *Graph) cycleHelper(start *vertex, end *vertex) bool {
 		fmt.Println(seen)
 		u := stack[len(stack)-1]
 		fmt.Println("Looking at", u.id)
+		fmt.Printf("%+v\n", u.neighbors)
 		stack = stack[:(len(stack) - 1)]
 		if u.id == end.id {
 			fmt.Println("WE FOUND ONE GUYS!")
