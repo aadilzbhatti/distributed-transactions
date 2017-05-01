@@ -96,7 +96,7 @@ func (c Coordinator) Set(sa *SetArgs, reply *bool) error {
 			return err
 		}
 
-		graph.RemoveEdge(ga.Tid)
+		graph.RemoveEdge(sa.Tid)
 		return nil
 
 	} else {
