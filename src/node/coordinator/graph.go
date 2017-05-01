@@ -91,8 +91,8 @@ func (g *Graph) RemoveEdge(u, v string) error {
 }
 
 func (g *Graph) RemoveTransaction(trans int32) {
-	glock.Lock()
-	defer glock.Unlock()
+	// glock.Lock()
+	// defer glock.Unlock()
 	for _, k := range g.inUse[trans] {
 		g.RemoveEdge(k.start.id, k.end.id)
 	}
