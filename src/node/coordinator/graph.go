@@ -104,7 +104,6 @@ func (g *Graph) DetectCycle(trans int32) bool {
 	defer glock.RUnlock()
 
 	other := g.CopyGraph()
-	fmt.Println(other)
 	other.RemoveEdge(trans)
 	fmt.Println(other)
 	edge := g.edges[trans]
@@ -117,6 +116,7 @@ func (g *Graph) cycleHelper(start *vertex, end *vertex) bool {
 		fmt.Println("FOUND SOMETHING 1")
 		return false
 	}
+	fmt.Println(start.neighbors, end.neighbors)
 	for _, v := range start.neighbors {
     fmt.Println(v)
 		if end.id == v.id {
