@@ -56,17 +56,11 @@ func (g *Graph) AddEdge(u string, v string, trans int32) error {
 	defer glock.Unlock()
 
 	if v1, ok := g.nodes[u]; ok {
-		// fmt.Println("OK")
 		if v2, ok2 := g.nodes[v]; ok2 {
-			// fmt.Println("OK2")
 			e := edge{v1, v2, trans}
-			// fmt.Println("MADE EDGE", e)
 			g.edges[trans] = &e
-			// fmt.Println("ADDED EDGE TO GRAPH")
       g.nodes[u].neighbors[v] = v2
-			// fmt.Println("SET NEIGHBOR of u to v")
 			g.nodes[v].neighbors[u] = v1
-			// fmt.Println("SET NEIGHBOR OF v to u")
 			return nil
 		} else {
 			fmt.Println("YOU FUCKED UP BOY", v)
@@ -107,28 +101,33 @@ func (g *Graph) DetectCycle(trans int32) bool {
 	// defer glock.RUnlock()
 
 	other := g.CopyGraph()
+	fmt.Println("Old news baby", g.edges[trans])
 	other.RemoveEdge(trans)
 	fmt.Println(other)
 	edge := g.edges[trans]
+	fmt.Println(other.edges)
 	return other.cycleHelper(edge.start, edge.end)
 }
 
 func (g *Graph) cycleHelper(start *vertex, end *vertex) bool {
-	fmt.Println(start, end)
-	if end.id == start.id {
-		fmt.Println("FOUND SOMETHING 1")
-		return false
-	}
-	for _, v := range start.neighbors {
-		if end.id == v.id {
-			fmt.Println("FOUND SOMETHING 2")
+	seen := make(map[string]bool)
+	stack := make([]vertex, 0)
+
+	stack = append(stack, *start)
+	for len(stack) > 0 {
+		u := stack[len(stack)-1]
+		stack = stack[:(len(stack) - 1)]
+		if u.id == end.id {
 			return true
 		}
-		if g.cycleHelper(v, end) {
-			fmt.Println("FOUND SOMETHING 3")
-			return true
+		if _, ok := seen[u.id]; ok {
+			seen[u.id] = true
+			for _, v := range u.neighbors {
+				fmt.Println("NEighbor!", v)
+				stack = append(stack, *v)
+			}
 		}
 	}
-	fmt.Println("FOUND SOMETHING 4")
+
 	return false
 }
