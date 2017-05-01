@@ -101,7 +101,7 @@ func (g *Graph) DetectCycle(trans int32) bool {
 	// defer glock.RUnlock()
 
 	other := g.CopyGraph()
-	fmt.Println("Old news baby", g.edges[trans])
+	fmt.Println("Old news baby", g.edges[trans], other.edges[trans])
 	other.RemoveEdge(trans)
 	fmt.Println(other)
 	edge := g.edges[trans]
