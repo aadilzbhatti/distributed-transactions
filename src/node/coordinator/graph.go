@@ -115,7 +115,9 @@ func (g *Graph) cycleHelper(start *vertex, end *vertex) bool {
 
 	stack = append(stack, *start)
 	for len(stack) > 0 {
+		fmt.Println(stack)
 		u := stack[len(stack)-1]
+		fmt.Println("Looking at", u.id)
 		stack = stack[:(len(stack) - 1)]
 		if u.id == end.id {
 			return true
