@@ -147,6 +147,7 @@ func (g *Graph) cycleHelper(start *vertex, end *vertex) bool {
 			seen[u.id] = true
 			for _, v := range u.neighbors {
 				stack = append(stack, *v)
+				fmt.Println("HEY NOW", stack)
 			}
 		}
 	}
