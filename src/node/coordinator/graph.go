@@ -55,17 +55,17 @@ func (g *Graph) AddEdge(u string, v string, trans int32) error {
 	defer glock.Unlock()
 
 	if v1, ok := g.nodes[u]; ok {
-		fmt.Println("OK")
+		// fmt.Println("OK")
 		if v2, ok2 := g.nodes[v]; ok2 {
-			fmt.Println("OK2")
+			// fmt.Println("OK2")
 			e := edge{v1, v2, trans}
-			fmt.Println("MADE EDGE", e)
+			// fmt.Println("MADE EDGE", e)
 			g.edges[trans] = &e
-			fmt.Println("ADDED EDGE TO GRAPH")
+			// fmt.Println("ADDED EDGE TO GRAPH")
       g.nodes[u].neighbors[v] = v2
-			fmt.Println("SET NEIGHBOR of u to v")
+			// fmt.Println("SET NEIGHBOR of u to v")
 			g.nodes[v].neighbors[u] = v1
-			fmt.Println("SET NEIGHBOR OF v to u")
+			// fmt.Println("SET NEIGHBOR OF v to u")
 			return nil
 		} else {
 			fmt.Println("YOU FUCKED UP BOY", v)
@@ -116,7 +116,6 @@ func (g *Graph) cycleHelper(start *vertex, end *vertex) bool {
 		fmt.Println("FOUND SOMETHING 1")
 		return false
 	}
-	fmt.Println(start.neighbors, end.neighbors)
 	for _, v := range start.neighbors {
     fmt.Println(v)
 		if end.id == v.id {
