@@ -7,36 +7,43 @@ import (
 
 type vertex struct {
   id string
-	neighbors map[string]vertex
+	neighbors map[string]*vertex
 }
 
 type edge struct {
-	start vertex
-	end   vertex
+	start *vertex
+	end   *vertex
 	trans int32
 }
 
 type Graph struct {
-	nodes map[string]vertex
-	edges map[int32]edge
+	nodes map[string]*vertex
+	edges map[int32]*edge
 }
 
 var glock = &sync.RWMutex{}
 
 func NewGraph() *Graph {
-	return &Graph{make(map[string]vertex, 0), make(map[int32]edge, 0)}
+	return &Graph{make(map[string]*vertex, 0), make(map[int32]*edge, 0)}
 }
 
 func (g *Graph) CopyGraph() *Graph {
-	return &Graph{g.nodes, g.edges}
+	res := NewGraph()
+	for k, _ := range g.nodes {
+		res.AddVertex(k)
+	}
+	for _, e := range g.edges {
+		res.AddEdge(e.start.id, e.end.id, e.trans)
+	}
+	return res
 }
 
 func (g *Graph) AddVertex(id string) {
 	if !g.IsVertexInGraph(id) {
 	  fmt.Println("Adding vertex", id)
-		v := vertex{id, make(map[string]vertex, 0)}
+		v := vertex{id, make(map[string]*vertex, 0)}
 		glock.Lock()
-			g.nodes[id] = v
+		g.nodes[id] = &v
 		glock.Unlock()
 		fmt.Println(g)
 	}
@@ -53,7 +60,7 @@ func (g *Graph) AddEdge(u string, v string, trans int32) error {
 			fmt.Println("OK2")
 			e := edge{v1, v2, trans}
 			fmt.Println("MADE EDGE", e)
-			g.edges[trans] = e
+			g.edges[trans] = &e
 			fmt.Println("ADDED EDGE TO GRAPH")
       g.nodes[u].neighbors[v] = v2
 			fmt.Println("SET NEIGHBOR of u to v")
@@ -98,11 +105,12 @@ func (g *Graph) DetectCycle(trans int32) bool {
 
 	other := g.CopyGraph()
 	other.RemoveEdge(trans)
+	fmt.Println(other)
 	edge := g.edges[trans]
 	return other.cycleHelper(edge.start, edge.end)
 }
 
-func (g Graph) cycleHelper(start vertex, end vertex) bool {
+func (g *Graph) cycleHelper(start *vertex, end *vertex) bool {
 	fmt.Println(start, end)
 	if end.id == start.id {
 		fmt.Println("FOUND SOMETHING 1")
