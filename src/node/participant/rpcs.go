@@ -70,7 +70,7 @@ func (p *Participant) DoCommit(dca *DoCommitArgs, reply *bool) error {
 				self.Objects[k] = &v
 			}
 		}
-		for k, _ := range self.Objects {
+		for k := range self.Objects {
 			self.Objects[k].stop()
 			self.held[k].holding = false
 			self.held[k].currId = 0
@@ -88,7 +88,7 @@ func (p *Participant) DoAbort(daa *DoAbortArgs, reply *bool) error {
 	if trans, ok := self.Transactions[daa.Tid]; ok {
 		for k := range self.Objects {
 			self.Objects[k].stop()
-      self.Objects[k].resetKey(trans.initial[k].Value, daa.Tid)
+			self.Objects[k].resetKey(trans.initial[k].Value, daa.Tid)
 			self.held[k].holding = false
 			self.held[k].cond.Broadcast()
 		}
@@ -112,8 +112,8 @@ func (p *Participant) SetKey(sa *SetArgs, reply *bool) error {
 		// we need to start a new transaction
 		self.Transactions[sa.Tid] = NewTransaction(sa.Tid)
 
-    // set initial state of transaction
-    for k, _ := range self.Objects {
+		// set initial state of transaction
+		for k := range self.Objects {
 			self.Transactions[sa.Tid].addObject(k, *self.Objects[k])
 		}
 	}
@@ -147,7 +147,7 @@ func (p *Participant) GetKey(ga *GetArgs, reply *string) error {
 
 	if trans, ok := self.Transactions[ga.Tid]; ok {
 		// we are executing a running Transaction
-    log.Println(trans)
+		log.Println(trans)
 	} else {
 		// we need to start a new transaction
 		self.Transactions[ga.Tid] = NewTransaction(ga.Tid)

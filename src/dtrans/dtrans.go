@@ -64,7 +64,7 @@ func runCommand(cmds []string, i int) {
 		err := Set(cmds[i+1], cmds[i+2], cmds[i+3], currentId)
 		if err != nil {
 			fmt.Println("Could not set:", err)
-      currentId = 0
+			currentId = 0
 			return
 		}
 		fmt.Printf("SETTING %v.%v = %v\n", cmds[i+1], cmds[i+2], cmds[i+3])
@@ -75,11 +75,11 @@ func runCommand(cmds []string, i int) {
 			return
 		}
 		res, err := Get(cmds[i+1], cmds[i+2], currentId)
-    if err != nil {
-      fmt.Println("Could not get:", err)
-      currentId = 0
-      return
-    }
+		if err != nil {
+			fmt.Println("Could not get:", err)
+			currentId = 0
+			return
+		}
 		if res != "" {
 			fmt.Printf("%v.%v = %v\n", cmds[i+1], cmds[i+2], res)
 		}
@@ -95,7 +95,7 @@ func runCommand(cmds []string, i int) {
 			return
 		}
 		fmt.Println("OK")
-    currentId = 0
+		currentId = 0
 
 	} else if cmds[i] == "ABORT" {
 		if currentId == 0 {
@@ -109,7 +109,7 @@ func runCommand(cmds []string, i int) {
 		}
 
 		fmt.Println("OK")
-    currentId = 0
+		currentId = 0
 
 	} else {
 		fmt.Println("Error: Invalid command")

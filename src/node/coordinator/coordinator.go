@@ -6,8 +6,8 @@ import (
 	"net"
 	"net/rpc"
 	"node/participant"
+	"strconv"
 	"sync"
-  "strconv"
 )
 
 var host string = "sp17-cs425-g26-0%d.cs.illinois.edu"
@@ -34,7 +34,7 @@ func Start() error {
 		go self.joinParticipant(i)
 	}
 
-  // set up deadlock detection graph
+	// set up deadlock detection graph
 	graph = NewGraph()
 
 	// interface with client
@@ -60,7 +60,7 @@ func (c Coordinator) setupRPC() error {
 }
 
 func (c Coordinator) joinParticipant(id int) {
-  serverId := string(rune('A' + (id - 2)))
+	serverId := string(rune('A' + (id - 2)))
 	log.Printf("Trying to join node %v\n", serverId)
 	hostname := fmt.Sprintf("%s:%d", fmt.Sprintf(host, id), 3000)
 
@@ -84,9 +84,8 @@ func (c Coordinator) joinParticipant(id int) {
 				log.Printf("Server %v joined the system\n", serverId)
 			}
 
-      // graph.AddVertex(serverId)
-      graph.AddVertex(strconv.Itoa(id))
-      fmt.Println("It was called here!")
+			// graph.AddVertex(serverId)
+			graph.AddVertex(strconv.Itoa(id))
 			client.Close()
 			return
 		}

@@ -6,7 +6,7 @@ import (
 )
 
 type vertex struct {
-  id string
+	id        string
 	neighbors map[string]*vertex
 }
 
@@ -29,7 +29,7 @@ func NewGraph() *Graph {
 
 func (g *Graph) CopyGraph() *Graph {
 	res := NewGraph()
-	for k, _ := range g.nodes {
+	for k := range g.nodes {
 		res.AddVertex(k)
 		for n, v := range g.nodes[k].neighbors {
 			res.nodes[k].neighbors[n] = v
@@ -44,7 +44,6 @@ func (g *Graph) AddVertex(id string) {
 		glock.Lock()
 		g.nodes[id] = &v
 		glock.Unlock()
-		fmt.Println(g)
 	}
 }
 
@@ -54,7 +53,7 @@ func (g *Graph) AddEdge(u string, v string, trans int32) error {
 
 	if v1, ok := g.nodes[u]; ok {
 		if v2, ok2 := g.nodes[v]; ok2 {
-      g.nodes[u].neighbors[v] = v2
+			g.nodes[u].neighbors[v] = v2
 			g.inUse[trans] = append(g.inUse[trans], &edge{v1, v2, trans})
 			return nil
 		} else {
@@ -83,7 +82,8 @@ func (g *Graph) IsVertexInGraph(name string) bool {
 	glock.RLock()
 	defer glock.RUnlock()
 
-	_, ok := g.nodes[name]; return ok
+	_, ok := g.nodes[name]
+	return ok
 }
 
 func (g *Graph) DetectCycle(u, v string) bool {

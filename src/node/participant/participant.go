@@ -12,15 +12,15 @@ type Participant struct {
 	Transactions map[int32]*Transaction
 	Address      string
 	Id           int
-  held 				 map[string]*Held
+	held         map[string]*Held
 }
 
 type Held struct {
-	name string
-	currId int32
+	name    string
+	currId  int32
 	holding bool
-	cond *sync.Cond
-	lock *sync.Mutex
+	cond    *sync.Cond
+	lock    *sync.Mutex
 }
 
 var self Participant

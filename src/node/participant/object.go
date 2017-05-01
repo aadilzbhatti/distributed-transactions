@@ -15,12 +15,12 @@ type Object struct {
 }
 
 func NewObject(key string, value string, trans int32) *Object {
-  if _, ok := self.held[key]; ok {
-    self.held[key].lock.Lock()
+	if _, ok := self.held[key]; ok {
+		self.held[key].lock.Lock()
 		for self.held[key].holding && self.held[key].currId != trans {
 			self.held[key].cond.Wait()
 		}
-	  self.held[key].lock.Unlock()
+		self.held[key].lock.Unlock()
 	}
 	m := &sync.RWMutex{}
 	c := sync.NewCond(m)
@@ -55,17 +55,17 @@ func (o *Object) resetKey(value string, trans int32) {
 
 func (o *Object) setKey(key string, value string, trans int32) {
 	if _, ok := self.held[key]; ok {
-	  self.held[key].lock.Lock()
+		self.held[key].lock.Lock()
 		for self.held[key].holding && self.held[key].currId != trans && self.held[key].currId != 0 {
 			fmt.Println("O BOY")
 			self.held[key].cond.Wait()
 		}
-	  fmt.Printf("In setKey: %v is value\n", value)
-	  o.Value = value
+		fmt.Printf("In setKey: %v is value\n", value)
+		o.Value = value
 		o.currTrans = trans
-	  self.held[key].lock.Unlock()
+		self.held[key].lock.Unlock()
 	} else {
-	  fmt.Printf("In setKey 2: %v is value\n", value)
+		fmt.Printf("In setKey 2: %v is value\n", value)
 		o.Value = value
 		o.currTrans = trans
 	}

@@ -12,7 +12,7 @@ type BeginArgs struct{}
 
 type SetArgs struct {
 	Tid      int32
-  MyId string
+	MyId     string
 	ServerId string
 	Key      string
 	Value    string
@@ -20,7 +20,7 @@ type SetArgs struct {
 
 type GetArgs struct {
 	Tid      int32
-	MyId string
+	MyId     string
 	ServerId string
 	Key      string
 }
@@ -73,7 +73,6 @@ func (c Coordinator) Set(sa *SetArgs, reply *bool) error {
 		// if cycle in Graph caused by this transaction
 		if graph.DetectCycle(sa.MyId, otherId) {
 			graph.RemoveEdge(sa.MyId, otherId)
-			fmt.Println("About to abort")
 
 			// abort this Transaction
 			aa := AbortArgs{sa.Tid}
