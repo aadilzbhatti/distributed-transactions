@@ -22,7 +22,7 @@ func Start() {
 			break
 		}
 	}
-	fmt.Printf("Node ID is %v\n", nodeId)
+	log.Printf("Node ID is %v\n", nodeId)
 	if nodeId == 1 {
 		// if id is 1, is Coordinator
 		go coordinator.Start()
@@ -36,7 +36,7 @@ func Start() {
 func getHostName() string {
 	out, err := exec.Command("hostname").Output()
 	if err != nil {
-		fmt.Println("Failed to obtain hostname")
+		log.Println("Failed to obtain hostname")
 		return ""
 	}
 	return strings.TrimSpace(string(out))
