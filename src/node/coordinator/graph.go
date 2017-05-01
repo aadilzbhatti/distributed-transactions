@@ -44,15 +44,21 @@ func (g *Graph) AddVertex(id string) {
 
 func (g *Graph) AddEdge(u string, v string, trans int32) error {
   fmt.Println("Adding edge")
-	// glock.Lock()
-	// defer glock.Unlock()
+	glock.Lock()
+	defer glock.Unlock()
 
 	if v1, ok := g.nodes[u]; ok {
+		fmt.Println("OK")
 		if v2, ok2 := g.nodes[v]; ok2 {
+			fmt.Println("OK2")
 			e := edge{v1, v2, trans}
+			fmt.Println("MADE EDGE", e)
 			g.edges[trans] = e
+			fmt.Println("ADDED EDGE TO GRAPH")
       g.nodes[u].neighbors[v] = v2
+			fmt.Println("SET NEIGHBOR of u to v")
 			g.nodes[v].neighbors[u] = v1
+			fmt.Println("SET NEIGHBOR OF v to u")
 			fmt.Println(g)
 			return nil
 		} else {
