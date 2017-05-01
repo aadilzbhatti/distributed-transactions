@@ -116,20 +116,23 @@ func (g *Graph) cycleHelper(start *vertex, end *vertex) bool {
 	stack = append(stack, *start)
 	for len(stack) > 0 {
 		fmt.Println(stack)
+		fmt.Println(seen)
 		u := stack[len(stack)-1]
 		fmt.Println("Looking at", u.id)
 		stack = stack[:(len(stack) - 1)]
 		if u.id == end.id {
+			fmt.Println("WE FOUND ONE GUYS!")
 			return true
 		}
-		if _, ok := seen[u.id]; ok {
+		if _, ok := seen[u.id]; !ok {
+			fmt.Println("WE ARE IN THE MONEY")
 			seen[u.id] = true
 			for _, v := range u.neighbors {
-				//fmt.Println("NEighbor!", v)
 				stack = append(stack, *v)
 			}
 		}
 	}
 
+	fmt.Println("I AINT SEEN SHIT BOI")
 	return false
 }
