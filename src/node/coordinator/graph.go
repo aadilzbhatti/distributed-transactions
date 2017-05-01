@@ -105,20 +105,20 @@ func (g *Graph) DetectCycle(trans int32) bool {
 
 func (g Graph) cycleHelper(start vertex, end vertex) bool {
 	if end.id == start.id {
-		fmt.Println("FOUND SOMETHING")
+		fmt.Println("FOUND SOMETHING 1")
 		return false
 	}
 	for _, v := range start.neighbors {
     fmt.Println(v)
 		if end.id == v.id {
-			fmt.Println("FOUND SOMETHING")
+			fmt.Println("FOUND SOMETHING 2")
 			return true
 		}
 		if g.cycleHelper(v, end) {
-			fmt.Println("FOUND SOMETHING")
+			fmt.Println("FOUND SOMETHING 3")
 			return true
 		}
 	}
-	fmt.Println("FOUND SOMETHING")
+	fmt.Println("FOUND SOMETHING 4")
 	return false
 }

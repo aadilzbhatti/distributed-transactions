@@ -72,9 +72,10 @@ func (c Coordinator) Set(sa *SetArgs, reply *bool) error {
 		// if cycle in Graph caused by this transaction
 		if graph.DetectCycle(sa.Tid) {
 			graph.RemoveEdge(sa.Tid)
+			fmt.Println("About to abort")
 
 			// abort this Transaction
-			aa := AbortArgs{sa.Tid}
+			aa := participant.DoAbortArgs{sa.Tid}
 			c2, e2 := rpc.Dial("tcp", fmt.Sprintf("%s:%d", p.Address, 3000))
 			defer c2.Close()
 			if e2 != nil {
@@ -123,7 +124,7 @@ func (c Coordinator) Get(ga *GetArgs, reply *string) error {
 			graph.RemoveEdge(ga.Tid)
 
 			// abort this Transaction
-			aa := AbortArgs{ga.Tid}
+			aa := participant.DoAbortArgs{ga.Tid}
 			c2, e2 := rpc.Dial("tcp", fmt.Sprintf("%s:%d", p.Address, 3000))
 			defer c2.Close()
 			if e2 != nil {

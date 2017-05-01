@@ -93,6 +93,7 @@ func (p *Participant) DoAbort(daa *DoAbortArgs, reply *bool) error {
 			self.held[k].cond.Broadcast()
 		}
 		trans.abort()
+		log.Println("Aborting:", daa.Tid)
 		*reply = true
 		return nil
 	}
