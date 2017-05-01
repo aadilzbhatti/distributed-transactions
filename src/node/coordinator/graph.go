@@ -61,7 +61,7 @@ func (g *Graph) AddEdge(u string, v string, trans int32) error {
 			// e := edge{v1, v2, trans}
 			// g.edges[trans] = &e
       g.nodes[u].neighbors[v] = v2
-			g.nodes[v].neighbors[u] = v1
+			// g.nodes[v].neighbors[u] = v1
 			g.inUse[trans] = append(g.inUse[trans], &edge{v1, v2, trans})
 			fmt.Printf("%+v\n", g)
 			fmt.Printf("%+v, %+v\n", g.nodes[u], g.nodes[v])
@@ -83,7 +83,7 @@ func (g *Graph) RemoveEdge(u, v string) error {
 	// if e, ok := g.edges[trans]; ok {
 		// delete(g.edges, trans)
 		delete(g.nodes[u].neighbors, v)
-		delete(g.nodes[v].neighbors, u)
+		// delete(g.nodes[v].neighbors, u)
 	// } else {
 		// return fmt.Errorf("Edge %v not in graph", trans)
 	// }
@@ -118,9 +118,10 @@ func (g *Graph) DetectCycle(u, v string) bool {
 	// edge := other.edges[trans]
 	other.RemoveEdge(u, v)
 	fmt.Println(other)
+	fmt.Printf("%+v, %+v in dc\n", other.nodes[u], other.nodes[v])
 	// fmt.Println(other.edges)
 	// fmt.Println(edge.start, edge.end)
-	return other.cycleHelper(other.nodes[u], other.nodes[v])
+	return other.cycleHelper(other.nodes[u], other.nodes[v]) || other.cycleHelper(other.nodes[v], other.nodes[u])
 }
 
 func (g *Graph) cycleHelper(start *vertex, end *vertex) bool {
