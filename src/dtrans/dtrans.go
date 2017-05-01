@@ -77,9 +77,9 @@ func runCommand(cmds []string, i int) {
 		res, err := Get(cmds[i+1], cmds[i+2], currentId)
 		if err != nil {
 			fmt.Println("Could not get:", err)
-      if err.Error() != "No such object in server" {
-        currentId = 0
-      }
+			if err.Error() != "No such object in server" {
+				currentId = 0
+			}
 			return
 		}
 		if res != "" {

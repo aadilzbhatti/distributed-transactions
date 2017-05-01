@@ -96,11 +96,8 @@ func (p *Participant) SetKey(sa *SetArgs, reply *bool) error {
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	log.Printf("In set: %v\n", sa)
-	if trans, ok := self.Transactions[sa.Tid]; ok {
-		// we are executing a running transaction
-		log.Println(trans)
-	} else {
+	if _, ok := self.Transactions[sa.Tid]; !ok {
+
 		// we need to start a new transaction
 		self.Transactions[sa.Tid] = NewTransaction(sa.Tid)
 
@@ -112,14 +109,12 @@ func (p *Participant) SetKey(sa *SetArgs, reply *bool) error {
 
 	if _, ok := self.Transactions[sa.Tid].updates[sa.Key]; ok {
 		self.Transactions[sa.Tid].updateObject(sa.Key, sa.Value)
-		log.Printf("Reseting %v to %v=%v\n", sa.Key, sa.Key, self.Objects[sa.Key])
 		self.held[sa.Key] = NewHeld(sa.Key, sa.Tid)
 
 	} else if obj, ok := self.Objects[sa.Key]; ok {
 		self.Transactions[sa.Tid].updates[sa.Key] = *obj
 		self.Transactions[sa.Tid].updateObject(sa.Key, sa.Value)
 		self.held[sa.Key] = NewHeld(sa.Key, sa.Tid)
-		log.Println("Updating a held object")
 
 	} else {
 		obj := NewObject(sa.Key, sa.Value, sa.Tid)
@@ -154,37 +149,26 @@ func (p *Participant) GetKey(ga *GetArgs, reply *string) error {
 
 	if v, ok := self.Transactions[ga.Tid].updates[ga.Key]; ok {
 		if v.currTrans != ga.Tid && v.currTrans != 0 {
-			log.Println("BABBY", v)
 			*reply = self.Transactions[ga.Tid].initial[ga.Key].Value
-			log.Println("Ah!", *reply)
 			return nil
 		} else if _, ok2 := self.Transactions[ga.Tid].updates[ga.Key]; !ok2 {
-			log.Println("BEEBA", v)
 			*reply = self.Transactions[ga.Tid].initial[ga.Key].Value
-			log.Println("Achoo!", *reply)
 			return nil
 		}
-		// *reply = self.Transactions[ga.Tid].updates[ga.Key].getKey(ga.Tid)
 		o := self.Transactions[ga.Tid].updates[ga.Key]
 		*reply = (&o).getKey(ga.Tid)
-		log.Println("o", *reply)
 
 	} else if v, ok := self.Objects[ga.Key]; ok {
 		if v.currTrans != ga.Tid && v.currTrans != 0 {
-			log.Println("BOOBO", v)
 			*reply = self.Transactions[ga.Tid].initial[ga.Key].Value
-			log.Println("Ah2!", *reply)
 			return nil
 		} else if _, ok2 := self.Transactions[ga.Tid].updates[ga.Key]; !ok2 {
-			log.Println("BABBA", v)
 			*reply = v.getKey(ga.Tid)
-			log.Println("Achoo2!", *reply)
 			return nil
 		}
-		// *reply = self.Transactions[ga.Tid].updates[ga.Key].getKey(ga.Tid)
 		o := self.Transactions[ga.Tid].updates[ga.Key]
 		*reply = (&o).getKey(ga.Tid)
-		log.Println("o", *reply)
+
 	} else {
 		*reply = "NOT FOUND"
 		return fmt.Errorf("No such object in server")
