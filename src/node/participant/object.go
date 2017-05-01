@@ -1,7 +1,6 @@
 package participant
 
 import (
-	"fmt"
 	"sync"
 )
 
@@ -61,7 +60,6 @@ func (o *Object) setKey(key string, value string, trans int32) {
 }
 
 func (o *Object) getKey(trans int32) string {
-	fmt.Println(o, trans)
 	key := o.Key
 	if _, ok := self.held[key]; ok {
 		self.held[key].lock.Lock()

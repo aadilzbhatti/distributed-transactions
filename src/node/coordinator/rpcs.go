@@ -201,7 +201,6 @@ func (c Coordinator) Abort(aa *AbortArgs, reply *bool) error {
 
 	paa := participant.DoAbortArgs{aa.Tid}
 	for _, p := range self.Participants {
-		log.Println(p)
 		client, err := rpc.Dial("tcp", fmt.Sprintf("%s:%d", p.Address, 3000))
 		if err != nil {
 			log.Println("Error in Abort/Dial:", err)

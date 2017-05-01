@@ -124,7 +124,6 @@ func (p *Participant) SetKey(sa *SetArgs, reply *bool) error {
 
 	*reply = true
 	log.Printf("Finished setting %v = %v\n", sa.Key, sa.Value)
-	log.Println(self.Transactions[sa.Tid].updates[sa.Key])
 	return nil
 }
 
@@ -132,10 +131,8 @@ func (p *Participant) GetKey(ga *GetArgs, reply *string) error {
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	if trans, ok := self.Transactions[ga.Tid]; ok {
-		// we are executing a running Transaction
-		log.Println(trans)
-	} else {
+	if _, ok := self.Transactions[ga.Tid]; !ok {
+
 		// we need to start a new transaction
 		self.Transactions[ga.Tid] = NewTransaction(ga.Tid)
 
