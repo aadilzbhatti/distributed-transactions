@@ -63,7 +63,7 @@ func runCommand(cmds []string, i int) {
 		}
 		err := Set(cmds[i+1], cmds[i+2], cmds[i+3], currentId)
 		if err != nil {
-			fmt.Println("Could not set: ", err)
+			fmt.Println("Could not set:", err)
       currentId = 0
 			return
 		}
@@ -74,7 +74,12 @@ func runCommand(cmds []string, i int) {
 			fmt.Println("Error: Must begin transaction before calling GET")
 			return
 		}
-		res := Get(cmds[i+1], cmds[i+2], currentId)
+		res, err := Get(cmds[i+1], cmds[i+2], currentId)
+    if err != nil {
+      fmt.Println("Could not get:", err)
+      currentId = 0
+      return
+    }
 		if res != "" {
 			fmt.Printf("%v.%v = %v\n", cmds[i+1], cmds[i+2], res)
 		}

@@ -11,7 +11,7 @@ var chost string = "sp17-cs425-g26-01.cs.illinois.edu:3000"
 func Begin() (error, int32) {
 	client, err := rpc.Dial("tcp", chost)
 	if err != nil {
-		log.Println("Error in Begin/Dial: ", err)
+		log.Println("Error in Begin/Dial:", err)
 		return err, 0
 	}
 
@@ -24,7 +24,7 @@ func Begin() (error, int32) {
 func Set(serverId string, key string, value string, currId int32) error {
 	client, err := rpc.Dial("tcp", chost)
 	if err != nil {
-		log.Println("Error in Set/Dial: ", err)
+		log.Println("Error in Set/Dial:", err)
 		return err
 	}
 
@@ -34,18 +34,18 @@ func Set(serverId string, key string, value string, currId int32) error {
 	var reply bool
 	err = client.Call("Coordinator.Set", &sa, &reply)
 	if err != nil {
-		log.Println("Error in Set/RPC: ", err)
+		log.Println("Error in Set/RPC:", err)
 		return err
 	}
 
 	return nil
 }
 
-func Get(serverId string, key string, currId int32) string {
+func Get(serverId string, key string, currId int32) (string, err) {
 	client, err := rpc.Dial("tcp", chost)
 	if err != nil {
-		log.Println("Error in Get/Dial: ", err)
-		return ""
+		log.Println("Error in Get/Dial:", err)
+		return "", err
 	}
 
 	myId := getNodeId()
@@ -54,8 +54,8 @@ func Get(serverId string, key string, currId int32) string {
 	var reply string
 	err = client.Call("Coordinator.Get", &ga, &reply)
 	if err != nil {
-		log.Println("Error in Get/RPC: ", err)
-		return ""
+		log.Println("Error in Get/RPC:", err)
+		return "", err
 	}
 
 	return reply

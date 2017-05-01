@@ -79,7 +79,7 @@ func (c Coordinator) Set(sa *SetArgs, reply *bool) error {
 			aa := AbortArgs{sa.Tid}
 			var r bool
 			c.Abort(&aa, &r)
-			return fmt.Errorf("Transaction caused deadlock, aborted\n")
+			return fmt.Errorf("Transaction caused deadlock, aborted")
 		}
 
 		// otherwise continue
@@ -120,7 +120,7 @@ func (c Coordinator) Get(ga *GetArgs, reply *string) error {
 			aa := AbortArgs{ga.Tid}
 			var r bool
 			c.Abort(&aa, &r)
-			return fmt.Errorf("Transaction caused deadlock, aborted\n")
+			return fmt.Errorf("Transaction caused deadlock, aborted")
 		}
 
 		// abort transaction
