@@ -64,6 +64,7 @@ func (g *Graph) AddEdge(u string, v string, trans int32) error {
 			g.nodes[v].neighbors[u] = v1
 			g.inUse[trans] = append(g.inUse[trans], &edge{v1, v2, trans})
 			fmt.Printf("%+v\n", g)
+			fmt.Printf("%+v, %+v\n", g.nodes[u], g.nodes[v])
 			return nil
 		} else {
 			fmt.Println("YOU FUCKED UP BOY", v)
