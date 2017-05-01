@@ -93,7 +93,6 @@ func (c Coordinator) Set(sa *SetArgs, reply *bool) error {
 			return err
 		}
 
-		graph.RemoveEdge(sa.Tid)
 		return nil
 
 	} else {
@@ -135,8 +134,6 @@ func (c Coordinator) Get(ga *GetArgs, reply *string) error {
 			return err
 		}
 
-		// remove created edge
-		graph.RemoveEdge(ga.Tid)
 		return nil
 
 	} else {
@@ -145,7 +142,9 @@ func (c Coordinator) Get(ga *GetArgs, reply *string) error {
 }
 
 func (c Coordinator) Commit(ca *CommitArgs, reply *bool) error {
+	defer graph.RemoveEdge(ca.Tid)
   fmt.Println("COMMIT TIME!!")
+
 	// check if we can commit
 	cca := participant.CanCommitArgs{ca.Tid}
 	for _, p := range self.Participants {
@@ -205,6 +204,8 @@ func (c Coordinator) Commit(ca *CommitArgs, reply *bool) error {
 }
 
 func (c Coordinator) Abort(aa *AbortArgs, reply *bool) error {
+	defer graph.RemoveEdge(aa.Tid)
+
 	paa := participant.DoAbortArgs{aa.Tid}
 	for _, p := range self.Participants {
 		log.Println(p)

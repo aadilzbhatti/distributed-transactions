@@ -64,7 +64,7 @@ func (g *Graph) AddEdge(u string, v string, trans int32) error {
 			return nil
 		} else {
 			fmt.Println("YOU FUCKED UP BOY", v)
-			return fmt.Errorf("Vertex %v not in graph\n", v)
+			return fmt.Errorf("Vertex %v not in graph", v)
 		}
 	}
 	fmt.Println("YOU FUCKED UP BOY", u)
@@ -81,7 +81,7 @@ func (g *Graph) RemoveEdge(trans int32) error {
 		delete(g.nodes[e.start.id].neighbors, e.end.id)
 		delete(g.nodes[e.end.id].neighbors, e.start.id)
 	} else {
-		return fmt.Errorf("Edge %v not in graph\n", trans)
+		return fmt.Errorf("Edge %v not in graph", trans)
 	}
 
 	fmt.Println("Edge removed")
